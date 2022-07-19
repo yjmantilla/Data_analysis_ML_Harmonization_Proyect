@@ -133,8 +133,8 @@ datos_long=pd.read_feather(r"C:\Users\valec\Documents\JI\Codigos\Data_analysis_M
 datos_long['Subject']='sub-'+datos_long['Subject']
 
 data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
-print(len(data_Comp))
-data_Comp.reset_index().to_feather('Datos_componentes_formatolargo_filtrados.feather')
+#print(len(data_Comp))
+#data_Comp.reset_index().to_feather('Datos_componentes_formatolargo_filtrados.feather')
 
 print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
