@@ -34,13 +34,19 @@ SRM=pd.read_feather(r'D:\BASESDEDATOS\SRM\derivatives\longitudinal_data_powers_l
 
 CHBMP=pd.read_feather(r'D:\BASESDEDATOS\CHBMP\derivatives\longitudinal_data_powers_long_protmap_norm_components.feather')
 
-datos=pd.concat([SRM,BIO,CHBMP])
+datos=pd.concat([SRM,BIO,CHBMP]) 
 
 #Filtrado de los grupos en los que vana quedar los datos (Preguntar a Vero)
+
 datos['Group']=datos['Group'].replace({'CTR':'Control','G2':'Control','CHBMP':'Control','SRM':'Control','G1':'Control'})
 
 components=['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25' ]
-data_Comp=datos[datos.Components.isin(components)]
+data_Comp=datos[datos.Components.isin(components)] #Datos sin filtrar los sujetos con datos vacios
+
+#datos_sin_filtrar=data_Comp.iloc[:,1:]
+#datos_sin_filtrar.reset_index().to_feather('Datos_componentes_formatolargo_sin_filtrar.feather')
+
+data_Comp=pd.read_feather(r"C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Graficos Rois-Componentes de todas las DB\Datos_componentes_formatolargo_filtrados.feather")#Datos con sujetos sin datos vacios
 
 bands= data_Comp['Bands'].unique()
 for band in bands:

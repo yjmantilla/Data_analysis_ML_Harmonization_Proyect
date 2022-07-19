@@ -51,7 +51,9 @@ p_N=pd.concat([N_BIO,N_CHBMP,N_SRM]) #Union d elos datos demograficos
 
 #Union de los dataframe
 d_B=pd.merge(left=datosICC,right=p_N, how='left', left_on='participant_id', right_on='participant_id')
-d_B['sex'].replace({'f':'F','m':'M'}, inplace=True)
+d_B['sex'].replace({'f':'F','m':'M'}, inplace=True) #Cambio a que queden con sexo F y M
+d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
+d_B['education'] = d_B['education'].astype('float64')
 
 #Falta organizar el nivel de educacion 
 icc=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
@@ -89,19 +91,50 @@ print('Total de datos demograficos SRM ',len(N_SRM))
 print('\nTotal de datos al unir los ICC con datos demograficos')
 databases=d_B['database'].unique()
 
-df=pd.DataFrame()
-for i in databases:
-    dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total', 'Denom_total']].isnull().sum()
-    df[i]=dx
-    print('\n', i)
-    print('Numero de sujetos:',len(d_B[d_B['database']==i]['participant_id'].unique()))
-    print('Numero de datos:',len(d_B[d_B['database']==i]))
+def ver_datos_vacios(d_B):
+    
+    df=pd.DataFrame()
+    for i in databases:
+        dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total', 'Denom_total']].isnull().sum()
+        df[i]=dx
+        print('\n', i)
+        print('Numero de sujetos:',len(d_B[d_B['database']==i]['participant_id'].unique()))
+        print('Numero de datos:',len(d_B[d_B['database']==i]))
+        print('\nCantidad de datos vacios')
+        print(df)
+    return None
 
 
 print('\nCantidad de datos vacios antes de unir  el dataframe con los datos demograficos')
 print(df_dem)
-print('\nCantidad de datos vacios despues de unir el dataframe con los datos demograficos')
-print(df)
+
+ver_datos_vacios(d_B)
+
+## Filtrado de datos vacios
+
+
+
+
+vacio_SRM=d_B[d_B['database']=='SRM'].isnull()
+vacio_CHBMP=d_B[d_B['database']=='CHBMP'].isnull()
+
+d_B.drop(vacio_SRM.index[vacio_SRM['Denom_total']==True], inplace = True)
+#Cambiar 
+d_B.drop(vacio_CHBMP.index[(vacio_CHBMP['education']==True) | (vacio_CHBMP['MM_total']==True)], inplace = True) #Datos finalmente filtrados
+
+#d_B.drop(d_B[d_B['database']=='CHBMP'][['MM_total']].isnull().index, inplace = True)
+
+print('\nCantidad de datos vacios')
+ver_datos_vacios(d_B)
+
+#Filtrado de datos en formato long
+sujetos=d_B['participant_id'].unique()
+datos_long=pd.read_feather(r"C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Graficos Rois-Componentes de todas las DB\Datos_componentes_formatolargo_sin_filtrar.feather")
+datos_long['Subject']='sub-'+datos_long['Subject']
+
+data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
+print(len(data_Comp))
+data_Comp.reset_index().to_feather('Datos_componentes_formatolargo_filtrados.feather')
 
 print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
