@@ -44,16 +44,21 @@ N_CHBMP = N_CHBMP.rename(columns={'Code':'participant_id','Age':'age','Gender':'
 N_CHBMP['participant_id']='sub-'+N_CHBMP['participant_id']
 
 N_SRM=pd.read_csv("D:\BASESDEDATOS\SRM\participants.tsv",sep='\t')
-N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_3']] #Elegí vf3 ya que tenia resultados mas parecidos a los de biomarcadores (habian 3 vf)
-N_SRM = N_SRM.rename(columns={'vf_3':'Denom_total'}) #Verificar con vero pero denom es igual a fluidez verbal?? creo que por eso la elegimos
+N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_1','vf_2','vf_3']] #Elegí vf3 ya que tenia resultados mas parecidos a los de biomarcadores (habian 3 vf)
+N_SRM = N_SRM.rename(columns={'vf_1':'FAS_F','vf_2':'FAS_S','vf_3':'FAS_A'}) #Verificar con vero pero denom es igual a fluidez verbal?? creo que por eso la elegimos
 
 p_N=pd.concat([N_BIO,N_CHBMP,N_SRM]) #Union d elos datos demograficos
-
+N_BIO.replace({'None':np.NaN},inplace=True)
+N_CHBMP.replace({'None':np.NaN},inplace=True)
+N_SRM.replace({'None':np.NaN},inplace=True)
+p_N.replace({'None':np.NaN},inplace=True)
 #Union de los dataframe
 d_B=pd.merge(left=datosICC,right=p_N, how='left', left_on='participant_id', right_on='participant_id')
 d_B['sex'].replace({'f':'F','m':'M'}, inplace=True) #Cambio a que queden con sexo F y M
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
 d_B['education'] = d_B['education'].astype('float64')
+
+
 
 #Falta organizar el nivel de educacion 
 icc=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
@@ -88,26 +93,28 @@ print('Total de datos demograficos SRM ',len(N_SRM))
 
 #Cantidad de datos luego de unir los dataframes
 
-print('\nTotal de datos al unir los ICC con datos demograficos')
-databases=d_B['database'].unique()
+
+
 
 def ver_datos_vacios(d_B):
     
     df=pd.DataFrame()
+    databases=d_B['database'].unique()
     for i in databases:
-        dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total', 'Denom_total']].isnull().sum()
+        dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total', 'FAS_F','FAS_S','FAS_A']].isnull().sum()
         df[i]=dx
         print('\n', i)
         print('Numero de sujetos:',len(d_B[d_B['database']==i]['participant_id'].unique()))
         print('Numero de datos:',len(d_B[d_B['database']==i]))
-        print('\nCantidad de datos vacios')
-        print(df)
+    print('\nCantidad de datos vacios')
+    print(df)
     return None
 
 
 print('\nCantidad de datos vacios antes de unir  el dataframe con los datos demograficos')
 print(df_dem)
 
+print('\nTotal de datos al unir los IC con datos demograficos')
 ver_datos_vacios(d_B)
 
 ## Filtrado de datos vacios
@@ -117,14 +124,18 @@ ver_datos_vacios(d_B)
 
 vacio_SRM=d_B[d_B['database']=='SRM'].isnull()
 vacio_CHBMP=d_B[d_B['database']=='CHBMP'].isnull()
+vacio_BIO=d_B[d_B['database']=='BIOMARCADORES'].isnull()
 
-d_B.drop(vacio_SRM.index[vacio_SRM['Denom_total']==True], inplace = True)
+d_B.drop(vacio_SRM.index[vacio_SRM['FAS_F']==True], inplace = True)
+d_B.drop(vacio_BIO.index[(vacio_BIO['FAS_F']==True) | (vacio_BIO['MM_total']==True)], inplace = True)
+#d_B.drop(vacio_SRM.index[vacio_SRM['FAS_A']==True], inplace = True)
+#d_B.drop(vacio_SRM.index[vacio_SRM['FAS_S']==True], inplace = True)
 #Cambiar 
 d_B.drop(vacio_CHBMP.index[(vacio_CHBMP['education']==True) | (vacio_CHBMP['MM_total']==True)], inplace = True) #Datos finalmente filtrados
 
 #d_B.drop(d_B[d_B['database']=='CHBMP'][['MM_total']].isnull().index, inplace = True)
 
-print('\nCantidad de datos vacios')
+print('\nCantidad de datos vacios luego de filtrar')
 ver_datos_vacios(d_B)
 
 #Filtrado de datos en formato long
@@ -134,7 +145,15 @@ datos_long['Subject']='sub-'+datos_long['Subject']
 
 data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
 #print(len(data_Comp))
+
 #data_Comp.reset_index().to_feather('Datos_componentes_formatolargo_filtrados.feather')
 
 print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
+
+
+#Prueba normalidad
+#Correlación entre la edad y las potencias graficamente y prueba de correlacion dependiendo de la normalidad
+#Diferencias entre grupos por banda y frecuencia
+#Diferencias en genero
+
