@@ -29,8 +29,8 @@ def normality_N_groups_Shapiro(data,dv,group,method='shapiro'):
     pg.normality(data=data, dv=dv, group=group,method=method)
 
 
-icc_data_Roi=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Reproducibilidad\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
-icc_data_Comp=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Reproducibilidad\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
+icc_data_Roi=pd.read_csv(r"E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Reproducibilidad\ICC_values_csv\icc_values_ROIS_G2-CTR.csv",sep=';')
+icc_data_Comp=pd.read_csv(r"E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Reproducibilidad\ICC_values_csv\icc_values_Components_G2-CTR.csv",sep=';')
 
 icc_data_Roi=icc_data_Roi[icc_data_Roi['Stage']=='Normalized data']
 cc_data_Comp=icc_data_Comp[icc_data_Comp['Stage']=='Normalized data']
@@ -41,3 +41,13 @@ graphic_normality_box(icc_data_Comp,'Group','ICC','ICC por grupos y Componentes'
 ##Como anova diferencias entre grupos pero no parametrica
 print(pg.pairwise_gameshowell(data=icc_data_Comp, dv='ICC', between='Group'))
 print(pg.pairwise_gameshowell(data=icc_data_Roi, dv='ICC', between='Group'))
+
+
+print(pg.pairwise_ttests(data=icc_data_Comp, dv='ICC'))
+
+###
+# ANOVA mix
+#print('Anova mix')
+#aov = pg.mixed_anova(data = icc_data_Comp, dv = 'ICC', between = 'Group', within = 'Stage',subject = 'Components')
+#pg.print_table(aov)
+
