@@ -79,7 +79,7 @@ def normality_N_groups_Shapiro(data,dv,group):
 '''Anova'''
 #Therefore, it is recommended to use a Welch ANOVA instead, followed by Games-Howell post-hoc tests, 
 # which do not require the groups to have equal variances.
-# If d-value<0.05 we can reject the null hypothesis that the values analyzed are equal between the groups
+# If p-value<0.05 we can reject the null hypothesis that the values analyzed are equal between the groups
 
 #All grooups
 #pg.welch_anova(data=df, dv='name where are the values', between='groups to compare') 

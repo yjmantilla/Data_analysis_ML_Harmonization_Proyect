@@ -23,11 +23,11 @@ def barplot_icc_nB_1G(icc_data,x_value,group,plot=False,save=False):
     if plot:
         plt.show()
 
-def barplot_icc_comp_nG(icc_data,x_value,plot=False,save=False):
+def barplot_icc_comp_nG(icc_data,x_value,title,plot=False,save=False):
     sns.set(font_scale = 0.9)
     sns.set_theme(style="white")
     ax=sns.catplot(x=x_value,y='ICC',data=icc_data,hue='Group',palette='winter_r',kind='bar',col='Bands',col_wrap=4,legend=False)
-    ax.fig.suptitle('ICC3k for '+ x_value +' in frequency bands')
+    ax.fig.suptitle(title)
     ax.add_legend(loc='upper center',bbox_to_anchor=(.5,0.94),ncol=2)
     ax.fig.subplots_adjust(top=0.829,bottom=0.133, right=0.936,left=0.062, hspace=0.143, wspace=0.11) # adjust the Figure in rp
     ax.set(xlabel=None)
@@ -40,11 +40,11 @@ def barplot_icc_comp_nG(icc_data,x_value,plot=False,save=False):
     if plot:
         plt.show()
 
-def barplot_icc_bandsx(icc_data,x_value,plot=False,save=False):
+def barplot_icc_bandsx(icc_data,x_value, title,plot=False,save=False):
     sns.set(font_scale = 0.9)
     sns.set_theme(style="white")
     ax=sns.catplot(x='Bands',y='ICC',data=icc_data,hue='Group',palette='winter_r',kind='bar',legend=False)
-    ax.fig.suptitle('ICC3k for '+ x_value +' in frequency bands')
+    ax.fig.suptitle(title)
     ax.add_legend(loc='upper center',bbox_to_anchor=(.5,0.94),ncol=2, title='Group')
     ax.fig.subplots_adjust(top=0.829,bottom=0.168, right=0.950,left=0.107, hspace=0.143, wspace=0.11) # adjust the Figure in rp
     ax.set(xlabel=None)
@@ -59,11 +59,11 @@ def barplot_icc_bandsx(icc_data,x_value,plot=False,save=False):
   
     
 
-barplot_icc_comp_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi',plot=True,save=True)
-barplot_icc_comp_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components',plot=True,save=True)
+barplot_icc_comp_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for Rois in frequency bands',plot=True,save=True)
+barplot_icc_comp_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for IC in frequency bands', plot=True,save=True)
 
-barplot_icc_bandsx(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi',plot=True,save=True)
-barplot_icc_bandsx(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components',plot=True,save=True)
+barplot_icc_bandsx(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for ROIs in frequency bands',plot=True,save=True)
+barplot_icc_bandsx(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for IC in frequency bands',plot=True,save=True)
 
 barplot_icc_nB_1G(icc_data_Roi,'Roi','G2',plot=True,save=True)
 barplot_icc_nB_1G(icc_data_Roi,'Roi','CTR',plot=True,save=True)
