@@ -31,6 +31,7 @@ def normality_N_groups_Shapiro(data,dv,group,method='shapiro'):
 
 icc_data_Roi=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Reproducibilidad\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
 icc_data_Comp=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Reproducibilidad\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
+
 icc_data_Roi=icc_data_Roi[icc_data_Roi['Stage']=='Normalized data']
 icc_data_Comp=icc_data_Comp[icc_data_Comp['Stage']=='Normalized data']
 
@@ -38,13 +39,5 @@ graphic_normality_box(icc_data_Roi,'Group','ICC','ICC por grupos y Rois')
 graphic_normality_box(icc_data_Comp,'Group','ICC','ICC por grupos y Componentes')
 
 ##Como anova diferencias entre grupos pero no parametrica
-bands=icc_data_Comp['Bands'].unique()
-print('Componentes')
-for i in bands:
-    print(i)
-    print(pg.pairwise_gameshowell(data=icc_data_Comp[icc_data_Comp['Bands']==i], dv='ICC', between='Group'))
-
-print('\nRois')
-for i in bands:
-    print(i)
-    print(pg.pairwise_gameshowell(data=icc_data_Roi[icc_data_Roi['Bands']==i], dv='ICC', between='Group'))
+print(pg.pairwise_gameshowell(data=icc_data_Comp, dv='ICC', between='Group'))
+print(pg.pairwise_gameshowell(data=icc_data_Roi, dv='ICC', between='Group'))
