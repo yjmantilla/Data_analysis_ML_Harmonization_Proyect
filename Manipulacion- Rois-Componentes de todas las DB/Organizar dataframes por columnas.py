@@ -8,9 +8,9 @@ import dataframe_image as dfi
 import researchpy as rp
 
 # Independent Components data
-SRM=pd.read_feather(r'D:\BASESDEDATOS\SRM\derivatives\data_powers_components_norm_SRM.feather')
-CHBMP=pd.read_feather(r'D:\BASESDEDATOS\CHBMP\derivatives\data_powers_components_norm_CHBMP.feather')
-BIO=pd.read_feather(r'D:\BASESDEDATOS\BIOMARCADORES_DERIVATIVES_VERO\derivatives\data_powers_components_norm_BIOMARCADORES.feather')
+SRM=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_SRM.feather')
+CHBMP=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_CHBMP.feather')
+BIO=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_BIOMARCADORES.feather')
 
 datos=pd.concat([SRM,BIO,CHBMP]) #concatenation of data
 
@@ -32,7 +32,7 @@ datosICC=datos1 #Datos con las columnas necesarias
 
 #Datos demograficos y pruebas neuropsicologicas
 
-N_BIO=pd.read_excel('Graficos Rois-Componentes de todas las DB\Demograficosbiomarcadores.xlsx')
+N_BIO=pd.read_excel('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Demograficosbiomarcadores.xlsx')
 N_BIO = N_BIO.rename(columns={'Codigo':'participant_id','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','MMSE':'MM_total','F':'FAS_F','S':'FAS_S','A':'FAS_A','Visita':'visit'})
 N_BIO['participant_id']=N_BIO['participant_id'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con '' el participant Id
 N_BIO['participant_id']='sub-'+N_BIO['participant_id']
@@ -94,16 +94,16 @@ for i in subjects_bio:
         # print(N_BIO[N_BIO['participant_id']==i])
 
 
-D_CHBMP=pd.read_csv("D:\BASESDEDATOS\CHBMP\Demographic_data.csv",header=1, sep=",")
+D_CHBMP=pd.read_csv("Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Demographic_data_CHBMP.csv",header=1, sep=",")
 col_demC=['Code', 'Gender', 'Age',  'Education Level ']
 Dem_CHBMP=D_CHBMP.loc[:,col_demC]
-MMSE_CHBMP=pd.read_csv("D:\BASESDEDATOS\CHBMP\MMSE.csv",header=1)
+MMSE_CHBMP=pd.read_csv("Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\MMSE_CHBMP.csv",header=1)
 MMSE_CHBMP=MMSE_CHBMP.loc[:,['Code', 'Total Score']]
 N_CHBMP=pd.merge(left=Dem_CHBMP,right=MMSE_CHBMP, how='left', left_on='Code', right_on='Code')
 N_CHBMP = N_CHBMP.rename(columns={'Code':'participant_id','Age':'age','Gender':'sex','Education Level ':'education','Total Score':'MM_total'})
 N_CHBMP['participant_id']='sub-'+N_CHBMP['participant_id']
 
-N_SRM=pd.read_csv("D:\BASESDEDATOS\SRM\participants.tsv",sep='\t')
+N_SRM=pd.read_csv("Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\participantsSRM.tsv",sep='\t')
 N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_1','vf_2','vf_3']] #Elegí vf3 ya que tenia resultados mas parecidos a los de biomarcadores (habian 3 vf)
 N_SRM = N_SRM.rename(columns={'vf_1':'FAS_F','vf_2':'FAS_S','vf_3':'FAS_A'}) #Verificar con vero pero denom es igual a fluidez verbal?? creo que por eso la elegimos
 
@@ -116,7 +116,7 @@ d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='lef
 d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
 d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
 d_B=pd.concat([d_BIO,d_SRM,d_CHBMP])
-d_B['sex'].replace({'f':'F','m':'M'}, inplace=True) #Cambio a que queden con sexo F y M
+d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) #Cambio a que queden con sexo F y M
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
 d_B['education'] = d_B['education'].astype('float64')
 
@@ -173,23 +173,33 @@ print(df_dem)
 print('\nTotal de datos al unir los IC con datos demograficos')
 ver_datos_vacios(d_B)
 ## Filtrado de datos vacios
-dB_copy=d_B.copy()
+d_B.reset_index(inplace=True, drop=True)
 
-d_B.drop(np.where((d_B[d_B['database']=='BIOMARCADORES']['MM_total'].isna())|(d_B[d_B['database']=='BIOMARCADORES']['FAS_F'].isna())|(d_B[d_B['database']=='SRM']['FAS_F'].isna())|(d_B[d_B['database']=='CHBMP']['MM_total'].isna()))[0],inplace = True)
 
+##Datos filtrados por cada base de datos
+l=[]
+l.extend(d_B[d_B['database']=='BIOMARCADORES'].dropna(subset=['MM_total','FAS_F']).index.tolist())
+l.extend(d_B[d_B['database']=='SRM'].dropna(subset=['FAS_F']).index.tolist())
+l.extend(d_B[d_B['database']=='CHBMP'].dropna(subset=['MM_total','education']).index.tolist())
+
+lista=list(set(l))
+d_B=d_B.loc[lista,:]
 print('\nCantidad de datos vacios luego de filtrar')
 ver_datos_vacios(d_B)
+#Base de datos organizada
+d_B.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather')
+
  #------------------------------------------------------
 #Filtrado de datos en formato long
 
 sujetos=d_B['participant_id'].unique()
-datos_long=pd.read_feather(r"C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Graficos Rois-Componentes de todas las DB\Datos_componentes_formatolargo_sin_filtrar.feather")
+datos_long=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_sin_filtrar.feather")
 datos_long['Subject']='sub-'+datos_long['Subject']
 
 data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
 #print(len(data_Comp))
 
-#data_Comp.reset_index().to_feather('Datos_componentes_formatolargo_filtrados.feather')
+data_Comp.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather')
 
 print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
