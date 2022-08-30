@@ -137,8 +137,9 @@ d_B.drop(vacio_CHBMP.index[(vacio_CHBMP['education']==True) | (vacio_CHBMP['MM_t
 
 print('\nCantidad de datos vacios luego de filtrar')
 ver_datos_vacios(d_B)
-
+ #------------------------------------------------------
 #Filtrado de datos en formato long
+
 sujetos=d_B['participant_id'].unique()
 datos_long=pd.read_feather(r"C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Graficos Rois-Componentes de todas las DB\Datos_componentes_formatolargo_sin_filtrar.feather")
 datos_long['Subject']='sub-'+datos_long['Subject']
@@ -151,9 +152,10 @@ data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
 print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
 
-
+ #------------------------------------------------------
 #Prueba normalidad
 #Correlación entre la edad y las potencias graficamente y prueba de correlacion dependiendo de la normalidad
 #Diferencias entre grupos por banda y frecuencia
 #Diferencias en genero
+ #------------------------------------------------------
 
