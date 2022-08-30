@@ -1,3 +1,4 @@
+from cmath import nan
 import pandas as pd 
 import seaborn as sns
 import numpy as np
@@ -31,8 +32,67 @@ datosICC=datos1 #Datos con las columnas necesarias
 
 #Datos demograficos y pruebas neuropsicologicas
 
-N_BIO=pd.read_csv('D:\BASESDEDATOS\BIOMARCADORES_DERIVATIVES_VERO\participants.tsv', sep='\t')
-N_BIO=N_BIO.drop(['hand'], axis=1)
+N_BIO=pd.read_excel('Graficos Rois-Componentes de todas las DB\Demograficosbiomarcadores.xlsx')
+N_BIO = N_BIO.rename(columns={'Codigo':'participant_id','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','MMSE':'MM_total','F':'FAS_F','S':'FAS_S','A':'FAS_A','Visita':'visit'})
+N_BIO['participant_id']=N_BIO['participant_id'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con '' el participant Id
+N_BIO['participant_id']='sub-'+N_BIO['participant_id']
+subjects_bio=N_BIO['participant_id'].unique()
+
+#subjects_bio=['sub-CTR001']
+for i in subjects_bio:
+    num_vis=len(N_BIO[N_BIO['participant_id']==i].loc[:,'visit'])
+    if num_vis==5:
+        #print('Antes')
+        #print(N_BIO[N_BIO['participant_id']==i])
+        V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
+        V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
+        V2=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V2'
+        V3=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V3'
+        V4=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V4'
+        index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
+        index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
+        index2=N_BIO[N_BIO['participant_id']==i].loc[V2].index.tolist()[0]
+        index3=N_BIO[N_BIO['participant_id']==i].loc[V3].index.tolist()[0]
+        index4=N_BIO[N_BIO['participant_id']==i].loc[V4].index.tolist()[0]
+        #Para modificar el MM_total y FAS MM_total
+        if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
+        if N_BIO[N_BIO['participant_id']==i].loc[V3]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index3,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]
+        if N_BIO[N_BIO['participant_id']==i].loc[V4]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index4,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]
+        #print('Despues')
+        #print(N_BIO[N_BIO['participant_id']==i])
+    if num_vis==4:
+        #print('Antes')
+        #print(N_BIO[N_BIO['participant_id']==i])
+        V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
+        V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
+        V2=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V2'
+        V3=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V3'
+        index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
+        index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
+        index2=N_BIO[N_BIO['participant_id']==i].loc[V2].index.tolist()[0]
+        index3=N_BIO[N_BIO['participant_id']==i].loc[V3].index.tolist()[0]
+        #Para modificar el MM_total y FAS MM_total
+        if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
+        if N_BIO[N_BIO['participant_id']==i].loc[V3]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index3,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]    
+        #print('Despues')
+        #print(N_BIO[N_BIO['participant_id']==i])
+    if num_vis==2:
+        # print('Antes')
+        # print(N_BIO[N_BIO['participant_id']==i])
+        V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
+        V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
+        index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
+        index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
+        if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
+        # print('Despues')
+        # print(N_BIO[N_BIO['participant_id']==i])
+
 
 D_CHBMP=pd.read_csv("D:\BASESDEDATOS\CHBMP\Demographic_data.csv",header=1, sep=",")
 col_demC=['Code', 'Gender', 'Age',  'Education Level ']
@@ -47,20 +107,20 @@ N_SRM=pd.read_csv("D:\BASESDEDATOS\SRM\participants.tsv",sep='\t')
 N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_1','vf_2','vf_3']] #Elegí vf3 ya que tenia resultados mas parecidos a los de biomarcadores (habian 3 vf)
 N_SRM = N_SRM.rename(columns={'vf_1':'FAS_F','vf_2':'FAS_S','vf_3':'FAS_A'}) #Verificar con vero pero denom es igual a fluidez verbal?? creo que por eso la elegimos
 
-p_N=pd.concat([N_BIO,N_CHBMP,N_SRM]) #Union d elos datos demograficos
 N_BIO.replace({'None':np.NaN},inplace=True)
 N_CHBMP.replace({'None':np.NaN},inplace=True)
 N_SRM.replace({'None':np.NaN},inplace=True)
-p_N.replace({'None':np.NaN},inplace=True)
+
 #Union de los dataframe
-d_B=pd.merge(left=datosICC,right=p_N, how='left', left_on='participant_id', right_on='participant_id')
+d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='left', left_on='participant_id', right_on='participant_id')
+d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
+d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
+d_B=pd.concat([d_BIO,d_SRM,d_CHBMP])
 d_B['sex'].replace({'f':'F','m':'M'}, inplace=True) #Cambio a que queden con sexo F y M
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
 d_B['education'] = d_B['education'].astype('float64')
 
 
-
-#Falta organizar el nivel de educacion 
 icc=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
        'C14_rBeta1', 'C14_rBeta2', 'C14_rBeta3', 'C14_rGamma', 'C15_rDelta',
        'C15_rTheta', 'C15_rAlpha-1', 'C15_rAlpha-2', 'C15_rBeta1',
@@ -93,11 +153,7 @@ print('Total de datos demograficos SRM ',len(N_SRM))
 
 #Cantidad de datos luego de unir los dataframes
 
-
-
-
 def ver_datos_vacios(d_B):
-    
     df=pd.DataFrame()
     databases=d_B['database'].unique()
     for i in databases:
@@ -116,24 +172,10 @@ print(df_dem)
 
 print('\nTotal de datos al unir los IC con datos demograficos')
 ver_datos_vacios(d_B)
-
 ## Filtrado de datos vacios
+dB_copy=d_B.copy()
 
-
-
-
-vacio_SRM=d_B[d_B['database']=='SRM'].isnull()
-vacio_CHBMP=d_B[d_B['database']=='CHBMP'].isnull()
-vacio_BIO=d_B[d_B['database']=='BIOMARCADORES'].isnull()
-
-d_B.drop(vacio_SRM.index[vacio_SRM['FAS_F']==True], inplace = True)
-d_B.drop(vacio_BIO.index[(vacio_BIO['FAS_F']==True) | (vacio_BIO['MM_total']==True)], inplace = True)
-#d_B.drop(vacio_SRM.index[vacio_SRM['FAS_A']==True], inplace = True)
-#d_B.drop(vacio_SRM.index[vacio_SRM['FAS_S']==True], inplace = True)
-#Cambiar 
-d_B.drop(vacio_CHBMP.index[(vacio_CHBMP['education']==True) | (vacio_CHBMP['MM_total']==True)], inplace = True) #Datos finalmente filtrados
-
-#d_B.drop(d_B[d_B['database']=='CHBMP'][['MM_total']].isnull().index, inplace = True)
+d_B.drop(np.where((d_B[d_B['database']=='BIOMARCADORES']['MM_total'].isna())|(d_B[d_B['database']=='BIOMARCADORES']['FAS_F'].isna())|(d_B[d_B['database']=='SRM']['FAS_F'].isna())|(d_B[d_B['database']=='CHBMP']['MM_total'].isna()))[0],inplace = True)
 
 print('\nCantidad de datos vacios luego de filtrar')
 ver_datos_vacios(d_B)
