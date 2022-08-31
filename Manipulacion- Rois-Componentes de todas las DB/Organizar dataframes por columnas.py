@@ -4,8 +4,8 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import HTML, display_html, display
-import dataframe_image as dfi
-import researchpy as rp
+#import dataframe_image as dfi
+#import researchpy as rp
 
 # Independent Components data
 SRM=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_SRM.feather')
@@ -201,7 +201,7 @@ data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
 
 data_Comp.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather')
 
-print('Valelinda')
+#print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
 
  #------------------------------------------------------
