@@ -36,18 +36,32 @@ icc_data_Comp=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML
 icc_data_Roi=icc_data_Roi[icc_data_Roi['Stage']=='Normalized data']
 icc_data_Comp=icc_data_Comp[icc_data_Comp['Stage']=='Normalized data']
 
-graphic_normality_box(icc_data_Roi,'Group','ICC','ICC por grupos y Rois')
-graphic_normality_box(icc_data_Comp,'Group','ICC','ICC por grupos y Componentes')
+# graphic_normality_box(icc_data_Roi,'Group','ICC','ICC por grupos y Rois')
+# graphic_normality_box(icc_data_Comp,'Group','ICC','ICC por grupos y Componentes')
 
 ##Como anova diferencias entre grupos pero no parametrica
+#Analsis de diferencias grupales por bandas
+# bands=icc_data_Comp['Bands'].unique()
+# print('Componentes')
+# for i in bands:
+#     print(i)
+#     print(pg.pairwise_gameshowell(data=icc_data_Comp[icc_data_Comp['Bands']==i], dv='ICC', between='Group'))
 
-bands=icc_data_Comp['Bands'].unique()
-print('Componentes')
-for i in bands:
+# print('\nRois')
+# for i in bands:
+#     print(i)
+#     print(pg.pairwise_gameshowell(data=icc_data_Roi[icc_data_Roi['Bands']==i], dv='ICC', between='Group'))
+
+#Analsis de diferencias grupales por cada uno d elos ICC y rois
+print('\nComparaciones por componente y Roi')
+c=icc_data_Comp['Components'].unique()
+print('\nComponentes')
+for i in c:
     print(i)
-    print(pg.pairwise_gameshowell(data=icc_data_Comp[icc_data_Comp['Bands']==i], dv='ICC', between='Group'))
+    print(pg.pairwise_gameshowell(data=icc_data_Comp[icc_data_Comp['Components']==i], dv='ICC', between='Group'))
 
 print('\nRois')
-for i in bands:
+r=icc_data_Roi['Roi'].unique()
+for i in r:
     print(i)
-    print(pg.pairwise_gameshowell(data=icc_data_Roi[icc_data_Roi['Bands']==i], dv='ICC', between='Group'))
+    print(pg.pairwise_gameshowell(data=icc_data_Roi[icc_data_Roi['Roi']==i], dv='ICC', between='Group'))

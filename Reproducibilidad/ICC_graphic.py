@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt 
 import seaborn as sns 
+
 icc_data_Roi=pd.read_csv(r'Reproducibilidad\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
 icc_data_Comp=pd.read_csv(r'Reproducibilidad\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
 
@@ -40,6 +41,24 @@ def barplot_icc_comp_nG(icc_data,x_value,title,plot=False,save=False):
     if plot:
         plt.show()
 
+def plot_ICC_nG(icc_data,x_value,title,kind,plot=False,save=False):
+    sns.set(font_scale = 0.9)
+    sns.set_theme(style="white")
+    ax=sns.catplot(x=x_value,y='ICC',data=icc_data,hue='Group',palette='winter_r',kind=kind,legend=False)
+    ax.fig.suptitle(title)
+    ax.add_legend(loc='upper center',bbox_to_anchor=(.5,0.94),ncol=2)
+    ax.fig.subplots_adjust(top=0.829,bottom=0.168, right=0.950,left=0.107, hspace=0.143, wspace=0.11)# adjust the Figure in rp
+    ax.set(xlabel=None)
+    ax.set(ylabel=None)
+    ax.fig.text(0.5, 0.07, x_value, ha='center', va='center')
+    ax.fig.text(0.03, 0.5,  'ICC', ha='center', va='center',rotation='vertical')
+    if save==True:
+        plt.savefig('Reproducibilidad\ICC_Graphics\ICC_Comparacióngrupos_sinsepararbandas_{tipo}.png'.format(tipo=x_value))
+        plt.close()
+    if plot:
+        plt.show()
+
+
 def barplot_icc_bandsx(icc_data,x_value, title,plot=False,save=False):
     sns.set(font_scale = 0.9)
     sns.set_theme(style="white")
@@ -64,6 +83,9 @@ barplot_icc_comp_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Co
 
 barplot_icc_bandsx(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for ROIs in frequency bands',plot=True,save=True)
 barplot_icc_bandsx(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for IC in frequency bands',plot=True,save=True)
+
+plot_ICC_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for ROIs','bar',plot=True,save=True)
+plot_ICC_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for ICs','bar',plot=True,save=True)
 
 barplot_icc_nB_1G(icc_data_Roi,'Roi','G2',plot=True,save=True)
 barplot_icc_nB_1G(icc_data_Roi,'Roi','CTR',plot=True,save=True)
