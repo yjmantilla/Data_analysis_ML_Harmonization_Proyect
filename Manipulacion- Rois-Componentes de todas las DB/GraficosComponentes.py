@@ -21,18 +21,18 @@ def graphic_roi(data,name_band,num_columns=4, save=True,plot=True):
     if plot:
         plt.show()
     if save==True:
-        plt.savefig('Graficos Rois-Componentes de todas las DB\Graficos-Components\{name_band}_Components.png'.format(name_band=name_band))
+        plt.savefig('Manipulacion- Rois-Componentes de todas las DB\Graficos-Components\{name_band}_Components.png'.format(name_band=name_band))
         plt.close()
     
     return 
 
 
 #se cargan los datos para hacer los graficos
-BIO=pd.read_feather(r'D:\BASESDEDATOS\BIOMARCADORES_DERIVATIVES_VERO\derivatives\longitudinal_data_powers_long_CE_norm_components.feather')
+BIO=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BIOMARCADORES_longitudinal_data_powers_long_CE_norm_components.feather')
 
-SRM=pd.read_feather(r'D:\BASESDEDATOS\SRM\derivatives\longitudinal_data_powers_long_resteyesc_norm_components.feather')
+SRM=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\SRM_longitudinal_data_powers_long_resteyesc_norm_components.feather')
 
-CHBMP=pd.read_feather(r'D:\BASESDEDATOS\CHBMP\derivatives\longitudinal_data_powers_long_protmap_norm_components.feather')
+CHBMP=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\CHBMP_longitudinal_data_powers_long_protmap_norm_components.feather')
 
 datos=pd.concat([SRM,BIO,CHBMP]) 
 
@@ -46,7 +46,7 @@ data_Comp=datos[datos.Components.isin(components)] #Datos sin filtrar los sujeto
 #datos_sin_filtrar=data_Comp.iloc[:,1:]
 #datos_sin_filtrar.reset_index().to_feather('Datos_componentes_formatolargo_sin_filtrar.feather')
 
-data_Comp=pd.read_feather(r"C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Graficos Rois-Componentes de todas las DB\Datos_componentes_formatolargo_filtrados.feather")#Datos con sujetos sin datos vacios
+data_Comp=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather")#Datos con sujetos sin datos vacios
 
 bands= data_Comp['Bands'].unique()
 for band in bands:
