@@ -4,6 +4,7 @@ import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import HTML, display_html, display
+import collections
 #import dataframe_image as dfi
 #import researchpy as rp
 
@@ -191,15 +192,25 @@ d_B.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Dat
 
  #------------------------------------------------------
 #Filtrado de datos en formato long
-
+visitas=d_B['visit'][d_B['database']=='BIOMARCADORES'].unique()
 sujetos=d_B['participant_id'].unique()
 datos_long=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_sin_filtrar.feather")
-datos_long['Subject']='sub-'+datos_long['Subject']
+#datos_long['Subject']='sub-'+datos_long['Subject']
+k=0
+for j in sujetos:
+    s=d_B[d_B['participant_id']==j]
+    if (d_B['database']=='BIOMARCADORES')[d_B.index[k]] == True:
+        if (collections.Counter(s['visit'].unique()) == collections.Counter(visitas)):
+            print('ok')
+            None
+        else:
+            k=k+1
+            datos_comp=datos_long.drop(datos_long[datos_long['Subject']==j].index)
 
-data_Comp=datos_long[datos_long.Subject.isin(sujetos)]
+datos_comp=datos_long[datos_long.Subject.isin(sujetos)]
 #print(len(data_Comp))
 
-data_Comp.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather')
+datos_comp.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather')
 
 #print('Valelinda')
 #des.dfi.export('describebandas'+study[k]+'.png')
