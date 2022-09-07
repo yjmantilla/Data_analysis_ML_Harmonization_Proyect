@@ -198,7 +198,7 @@ datos_long=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Dato
 #datos_long['Subject']='sub-'+datos_long['Subject']
 k=0
 for j in sujetos:
-    s=d_B[d_B['participant_id']==j]
+    s=datos_long[datos_long['Subject']==j] #El nombre del sujeto esta difernte en esta base de datos
     if (d_B['database']=='BIOMARCADORES')[d_B.index[k]] == True:
         if (collections.Counter(s['visit'].unique()) == collections.Counter(visitas)):
             print('ok')
