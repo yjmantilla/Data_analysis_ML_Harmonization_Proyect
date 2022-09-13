@@ -173,6 +173,7 @@ print('\nCantidad de datos vacios luego de filtrar')
 ver_datos_vacios(d_B)
 #Base de datos organizada
 d_B.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather')
+d_B.reset_index().to_csv('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.csv')
 #-------------------------------------------------------
 #Formato long
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
