@@ -13,15 +13,15 @@ def add_roi(data,rois,roi_labels):
     return data
 
 def graphic_roi(data,name_band,num_columns=4, save=True,plot=True):
-    max=data['Powers'].max()
+    max=data['Power'].max()
     sns.set(rc={'figure.figsize':(15,12)})
     sns.set_theme(style="white")
-    axs=sns.catplot(x='Group',y="Powers",data=data,hue='Study',dodge=True, kind="box",col='Roi',col_wrap=num_columns,palette='winter_r',fliersize=1.5,linewidth=0.5,legend=False)
+    axs=sns.catplot(x='group',y="Power",data=data,hue='database',dodge=True, kind="box",col='ROI',col_wrap=num_columns,palette='winter_r',fliersize=1.5,linewidth=0.5,legend=False)
     #plt.yticks(np.arange(0,round(max),0.1))
     axs.set(xlabel=None)
     axs.set(ylabel=None)
     axs.fig.suptitle('Relative '+r'$\bf{'+name_band+r'}$'+ ' power in the ROIs of normalized data given by the databases ')
-    axs.add_legend(loc='upper right',bbox_to_anchor=(.99,.99),ncol=1,title="Database")
+    axs.add_legend(loc='upper right',bbox_to_anchor=(.7,.95),ncol=4,title="Database")
 
     axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) # adjust the Figure in rp
     axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
@@ -29,10 +29,11 @@ def graphic_roi(data,name_band,num_columns=4, save=True,plot=True):
     if plot:
         plt.show()
     if save==True:
-        plt.savefig('Graficos Rois-Componentes de todas las DB\Graficos-Rois\{name_band}_Rois.png'.format(name_band=name_band))
+        plt.savefig('Manipulacion- Rois-Componentes de todas las DB\Graficos-Rois\{name_band}_Rois.png'.format(name_band=name_band))
         plt.close()
     
     return 
+
 
 
 F = ['FP1', 'FPZ', 'FP2', 'AF3', 'AF4', 'F7', 'F5', 'F3', 'F1', 'FZ', 'F2', 'F4', 'F6', 'F8'] 
@@ -43,19 +44,12 @@ rois = [F,C,PO,T]
 roi_labels = ['F','C','PO','T']
 
 #se cargan los datos para hacer los graficos
-BIO=pd.read_feather(r'D:\BASESDEDATOS\BIOMARCADORES_DERIVATIVES_VERO\derivatives\longitudinal_data_powers_long_CE_norm_channels.feather')
-SRM=pd.read_feather(r'D:\BASESDEDATOS\SRM\derivatives\longitudinal_data_powers_long_resteyesc_norm_channels.feather')
-CHBMP=pd.read_feather(r'D:\BASESDEDATOS\CHBMP\derivatives\longitudinal_data_powers_long_protmap_norm_channels.feather')
+data_roi=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados.feather')
 
-datos=pd.concat([SRM,BIO,CHBMP])
-
-#Filtrado de los grupos en los que vana quedar los datos (Preguntar a Vero)
-datos['Group']=datos['Group'].replace({'CTR':'Control','G2':'Control','CHBMP':'Control','SRM':'Control','G1':'Control'})
-
-data_roi=add_roi(datos,rois,roi_labels)
-bands= data_roi['Bands'].unique()
+bands= data_roi['Band'].unique()
 for band in bands:
-    d_banda=data_roi[data_roi['Bands']==band]
+    d_banda=data_roi[data_roi['Band']==band]
     graphic_roi(d_banda,band,num_columns=2,save=True,plot=False)
+
 
 print('valelinda')
