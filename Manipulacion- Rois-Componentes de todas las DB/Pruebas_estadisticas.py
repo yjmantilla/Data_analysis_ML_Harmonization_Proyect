@@ -106,8 +106,9 @@ icc=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
        'C24_rBeta3', 'C24_rGamma', 'C25_rDelta', 'C25_rTheta', 'C25_rAlpha-1',
        'C25_rAlpha-2', 'C25_rBeta1', 'C25_rBeta2', 'C25_rBeta3']
 
-datos=pd.read_feather(r'E:\Academico\Universidad\Posgrado\Tesis\Paquetes\Data_analysis_ML_Harmonization_Proyect\Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather')
+datos=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather')
 datos=datos.drop(columns='index')
+datos['index'] = datos.index
 
 for i in icc:
     print('\nDatos de '+i)
@@ -116,8 +117,8 @@ for i in icc:
 
 
 print(pg.welch_anova(data=datos, dv=i, between='database'))
+pg.pairwise_gameshowell(data=datos[datos['group']=='Control'], dv='C14_rDelta', between='database')
 
+pg.welch_anova(data=datos, dv='C14_rDelta', between='database') 
 
 # Comparaciones múltiples
-posthocs = pg.pairwise_ttests(dv='C14_rDelta', within='database', between='group',subject='participant_id', data=datos)
-pg.print_table(posthocs)
