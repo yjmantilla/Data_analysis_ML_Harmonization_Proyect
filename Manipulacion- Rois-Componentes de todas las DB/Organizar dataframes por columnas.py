@@ -12,8 +12,10 @@ import collections
 SRM=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_SRM.feather')
 CHBMP=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_CHBMP.feather')
 BIO=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_BIOMARCADORES.feather')
+DUQUE=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_DUQUE.feather')
+DUQUE['group'].replace({'Control':'DTA'}, inplace=True)
 
-datos=pd.concat([SRM,BIO,CHBMP]) #concatenation of data
+datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #concatenation of data
 
 columnas_deseadas=['subject', 'visit', 'group','condition','Study','C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25']
 col_completas=list(datos.columns)
@@ -112,11 +114,18 @@ N_BIO.replace({'None':np.NaN},inplace=True)
 N_CHBMP.replace({'None':np.NaN},inplace=True)
 N_SRM.replace({'None':np.NaN},inplace=True)
 
+N_DUQUE=pd.read_csv('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\demograficosDUQUE.csv',sep=";")
+N_DUQUE=N_DUQUE.loc[:,['participant_id','age','education','MM_total']]
+N_DUQUE['participant_id']=N_DUQUE['participant_id'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con '' el participant Id
+N_DUQUE['participant_id']='sub-'+N_DUQUE['participant_id']
+
+
 #Union de los dataframe
 d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='left', left_on='participant_id', right_on='participant_id')
 d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
 d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
-d_B=pd.concat([d_SRM,d_BIO,d_CHBMP])
+d_DUQUE=pd.merge(datosICC[datosICC['database']=='DUQUE'],N_DUQUE)
+d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
 d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) #Cambio a que queden con sexo F y M
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
 d_B['education'] = d_B['education'].astype('float64')
@@ -131,10 +140,12 @@ df_dem=pd.DataFrame()
 df_dem['BIOMARCADORES']=N_BIO.isnull().sum()
 df_dem['CHBMP']=N_CHBMP.isnull().sum()
 df_dem['SRM']=N_SRM.isnull().sum()
+df_dem['DUQUE']=N_DUQUE.isnull().sum()
 
 print('\nTotal de datos demograficos BIOMARCADORES',len(N_BIO))
 print('Total de datos demograficos CHBMP ',len(N_CHBMP))
 print('Total de datos demograficos SRM ',len(N_SRM))
+print('Total de datos demograficos DUQUE ',len(N_DUQUE))
 
 #Cantidad de datos luego de unir los dataframes
 
@@ -152,20 +163,25 @@ def ver_datos_vacios(d_B):
     return None
 
 
-print('\nCantidad de datos vacios antes de unir  el dataframe con los datos demograficos')
+print('\nCantidad de datos vacios antes de unir el dataframe con los datos demograficos')
 print(df_dem)
 
 print('\nTotal de datos al unir los IC con datos demograficos')
 ver_datos_vacios(d_B)
+
+
 ## Filtrado de datos vacios
 d_B.reset_index(inplace=True, drop=True)
 
 
 ##Datos filtrados por cada base de datos
 l=[]
+#Con este dropna de la base de datos quedo solo con los datos que necesito, y con el index los metoe n una lista
+
 l.extend(d_B[d_B['database']=='BIOMARCADORES'].dropna(subset=['MM_total','FAS_F']).index.tolist())
 l.extend(d_B[d_B['database']=='SRM'].dropna(subset=['FAS_F']).index.tolist())
 l.extend(d_B[d_B['database']=='CHBMP'].dropna(subset=['MM_total','education']).index.tolist())
+l.extend(d_B[d_B['database']=='DUQUE'].dropna(subset=['MM_total','education','age']).index.tolist())
 
 lista=list(set(l))
 d_B=d_B.loc[lista,:]

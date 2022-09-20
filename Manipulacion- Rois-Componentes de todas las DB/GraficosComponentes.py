@@ -13,7 +13,7 @@ def graphic_component(data,name_band,num_columns=4, save=True,plot=True):
     axs.set(xlabel=None)
     axs.set(ylabel=None)
     axs.fig.suptitle('Relative '+r'$\bf{'+name_band+r'}$'+ ' power in the components of normalized data given by the databases ')
-    axs.add_legend(loc='upper right',bbox_to_anchor=(.59,.95),ncol=3,title="Database")
+    axs.add_legend(loc='upper right',bbox_to_anchor=(.59,.95),ncol=4,title="Database")
 
     axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.05, hspace=0.138, wspace=0.062) # adjust the Figure in rp
     axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')

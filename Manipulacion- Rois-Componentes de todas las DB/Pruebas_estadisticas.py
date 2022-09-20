@@ -112,3 +112,6 @@ for i in icc:
     print('\nDatos de '+i)
     if(datos[i].isnull().tolist()[0]==False):
         print(pg.normality(data=datos, dv=i, group='database',method='shapiro'))
+
+
+print(pg.welch_anova(data=datos, dv=i, between='database'))
