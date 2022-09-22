@@ -13,7 +13,7 @@ SRM=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaor
 CHBMP=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_CHBMP.feather')
 BIO=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_BIOMARCADORES.feather')
 DUQUE=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\data_powers_components_norm_DUQUE.feather')
-DUQUE['group'].replace({'Control':'DTA'}, inplace=True)
+
 
 datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #concatenation of data
 
@@ -115,7 +115,7 @@ N_CHBMP.replace({'None':np.NaN},inplace=True)
 N_SRM.replace({'None':np.NaN},inplace=True)
 
 N_DUQUE=pd.read_csv('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\demograficosDUQUE.csv',sep=";")
-N_DUQUE=N_DUQUE.loc[:,['participant_id','age','education','MM_total']]
+N_DUQUE=N_DUQUE.loc[:,['participant_id','age','education','MM_total','group','sex']]
 N_DUQUE['participant_id']=N_DUQUE['participant_id'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con '' el participant Id
 N_DUQUE['participant_id']='sub-'+N_DUQUE['participant_id']
 
@@ -124,7 +124,9 @@ N_DUQUE['participant_id']='sub-'+N_DUQUE['participant_id']
 d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='left', left_on='participant_id', right_on='participant_id')
 d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
 d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
-d_DUQUE=pd.merge(datosICC[datosICC['database']=='DUQUE'],N_DUQUE)
+mergeDUQUE=datosICC[datosICC['database']=='DUQUE']
+mergeDUQUE=mergeDUQUE.drop(['group'], axis=1)
+d_DUQUE=pd.merge(mergeDUQUE,N_DUQUE)
 d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
 d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) #Cambio a que queden con sexo F y M
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
