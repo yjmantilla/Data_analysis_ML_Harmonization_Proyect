@@ -184,7 +184,7 @@ l=[]
 l.extend(d_B[d_B['database']=='BIOMARCADORES'].dropna(subset=['MM_total','FAS_F']).index.tolist())
 l.extend(d_B[d_B['database']=='SRM'].dropna(subset=['FAS_F']).index.tolist())
 l.extend(d_B[d_B['database']=='CHBMP'].dropna(subset=['MM_total','education']).index.tolist())
-l.extend(d_B[d_B['database']=='DUQUE'].dropna(subset=['MM_total','education','age']).index.tolist())
+l.extend(d_B[d_B['database']=='DUQUE'].dropna(subset=['MM_total','education','age','sex']).index.tolist())
 
 lista=list(set(l))
 d_B=d_B.loc[lista,:]
