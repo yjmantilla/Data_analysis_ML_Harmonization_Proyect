@@ -25,8 +25,7 @@ def graphic_dem(data,x_data,y_data,col,kind,bbox_x,left,title,id,save=True,plot=
     
     return 
 
-data_Comp=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather")#Datos con sujetos sin datos vaciosbands= data_Comp['Band'].unique()
-graphic_dem(data_Comp,'group','age',None,'swarm',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','swarm',save=True,plot=False)
+data_Comp=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather")#Datos con sujetos sin datos vaciosbands= data_Comp['Band'].unique()graphic_dem(data_Comp,'group','age',None,'swarm',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','swarm',save=True,plot=False)
 graphic_dem(data_Comp,'group','age',None,'box',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','box',save=True,plot=False)
 graphic_dem(data_Comp,'sex','age','group','swarm',0.5,None,'Distribucion de edades por genero en cada grupo de cada base de datos','swarm',save=True,plot=False)
 graphic_dem(data_Comp,'sex','age','group','box',0.5,None,'Distribucion de edades por genero en cada grupo de cada base de datos','box',save=True,plot=False)

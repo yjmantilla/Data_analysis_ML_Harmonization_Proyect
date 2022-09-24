@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def graphic_component(data,name_band,num_columns=4, save=True,plot=True):
+def graphic_component(data,name_band,id,num_columns=4,save=True,plot=True):
     max=data['Power'].max()
     sns.set(rc={'figure.figsize':(15,12)})
     sns.set_theme(style="white")
@@ -21,7 +21,7 @@ def graphic_component(data,name_band,num_columns=4, save=True,plot=True):
     if plot:
         plt.show()
     if save==True:
-        plt.savefig('Manipulacion- Rois-Componentes de todas las DB\Graficos-Components\{name_band}_Components.png'.format(name_band=name_band))
+        plt.savefig('Manipulacion- Rois-Componentes de todas las DB\Graficos-Components\{name_band}_Components_{id}.png'.format(name_band=name_band,id=id))
         plt.close()
     
     return 
@@ -47,11 +47,14 @@ def graphic_component(data,name_band,num_columns=4, save=True,plot=True):
 # datos_sin_filtrar.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_sin_filtrar.feather')
 
 data_Comp=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather")#Datos con sujetos sin datos vacios
+data_Comp1=pd.read_feather(r"Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados_sin_atipicos.feather")#Datos con sujetos sin datos vacios
 
 bands= data_Comp['Band'].unique()
 for band in bands:
     d_banda=data_Comp[data_Comp['Band']==band]
-    graphic_component(d_banda,band,num_columns=4,save=True,plot=False)
+    d_banda1=data_Comp1[data_Comp1['Band']==band]
+    graphic_component(d_banda,band,'con datos atipicos',num_columns=4,save=True,plot=False)
+    graphic_component(d_banda1,band,'sin datos atipicos',num_columns=4,save=True,plot=False)
 
 print('valelinda')
 
