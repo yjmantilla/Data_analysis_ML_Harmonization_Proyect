@@ -12,7 +12,7 @@ def add_roi(data,rois,roi_labels):
         data.loc[filas,'Roi']=roi_labels[i]
     return data
 
-def graphic_roi(data,name_band,num_columns=4, save=True,plot=True):
+def graphic_roi(data,name_band,id,num_columns=4, save=True,plot=True):
     max=data['Power'].max()
     sns.set(rc={'figure.figsize':(15,12)})
     sns.set_theme(style="white")
@@ -29,7 +29,7 @@ def graphic_roi(data,name_band,num_columns=4, save=True,plot=True):
     if plot:
         plt.show()
     if save==True:
-        plt.savefig('Manipulacion- Rois-Componentes de todas las DB\Graficos-Rois\{name_band}_Rois.png'.format(name_band=name_band))
+        plt.savefig('Manipulacion- Rois-Componentes de todas las DB\Graficos-Rois\{name_band}_Rois_{id}.png'.format(name_band=name_band,id=id))
         plt.close()
     
     return 
@@ -45,11 +45,14 @@ roi_labels = ['F','C','PO','T']
 
 #se cargan los datos para hacer los graficos
 data_roi=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados.feather')
+data_roi1=pd.read_feather(r'Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados_sin_atipicos.feather')
 
 bands= data_roi['Band'].unique()
 for band in bands:
     d_banda=data_roi[data_roi['Band']==band]
-    graphic_roi(d_banda,band,num_columns=2,save=True,plot=False)
+    d_banda1=data_roi1[data_roi1['Band']==band]
+    graphic_roi(d_banda,band,'condatosatipicos',num_columns=2,save=True,plot=False)
+    graphic_roi(d_banda1,band,'sindatosatipicos',num_columns=2,save=True,plot=False)
 
 
 print('valelinda')
