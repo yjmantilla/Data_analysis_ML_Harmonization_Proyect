@@ -56,7 +56,4 @@ for band in bands:
     graphic_component(d_banda,band,'con datos atipicos',num_columns=4,save=True,plot=False)
     graphic_component(d_banda1,band,'sin datos atipicos',num_columns=4,save=True,plot=False)
 
-print('valelinda')
-
-
-#Filtrado de datos
+print('Graficos Componentes guardados')

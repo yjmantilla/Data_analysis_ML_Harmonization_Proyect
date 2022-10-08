@@ -55,4 +55,4 @@ for band in bands:
     graphic_roi(d_banda1,band,'sindatosatipicos',num_columns=2,save=True,plot=False)
 
 
-print('valelinda')
+print('Graficos Rois guardados')

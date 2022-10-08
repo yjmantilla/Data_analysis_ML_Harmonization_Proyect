@@ -34,10 +34,12 @@ databases=data_Comp['database'].unique()
 controles=data_Comp[data_Comp['group']=='Control']
 diccionario={}
 lista_indices_com=[]
-for com in componentes_bandas:
-    for db in databases:
+
+for db in databases:
+    datos_db=controles[controles['database']==db] #Datos de una sola base de datos
+    indices_db=[]
+    for com in componentes_bandas:
         #print(band+' '+com+ ' '+db)
-        datos_db=controles[controles['database']==db]
         Q1 = np.percentile(datos_db[com], 25, interpolation = 'midpoint')
         Q3 = np.percentile(datos_db[com], 75,interpolation = 'midpoint')
         IQR = Q3 - Q1
@@ -59,15 +61,48 @@ for com in componentes_bandas:
             ''' Removing the Outliers '''
             #data_Comp_copy.drop(lower, inplace = True)
         indices=upper+lower
-        diccionario[com+'_'+db]=indices
-        lista_indices_com.extend(indices)
-        # print(diccionario[com+'_'+db])
-        # print(lista_indices_com)
+        #lista_indices_com.extend(indices)
+        indices_db.extend(indices)
+  
+    #diccionario[db]=indices_db
+    repeticiones=collections.Counter(indices_db)
+    bandera=True
+    print("\n"+db)
+    i=2
+    while(bandera):
+        i+=1
+        data_Comp_prueba=data_Comp.copy()
+        index_to_delete=list(dict(filter(lambda x: x[1] > i, repeticiones.items())).keys())
+        data_Comp_prueba.drop(index_to_delete, inplace = True)
+        porcentaje=100-data_Comp_prueba[data_Comp_prueba['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0]
+        if porcentaje<=5:
+            data_Comp_copy.drop(index_to_delete, inplace = True)
+            bandera=False
+            print(porcentaje)
+       
+
+    # for i in range(2,np.max(list(repeticiones.values())),1):
+    #     data_Comp_prueba=data_Comp.copy()
+    #     index_to_delete=list(dict(filter(lambda x: x[1] > i, repeticiones.items())).keys())
+    #     data_Comp_prueba.drop(index_to_delete, inplace = True)
+    #     porcentaje=100-data_Comp_prueba[data_Comp_prueba['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0]
         
-repeticiones=collections.Counter(lista_indices_com)  
-print('valor maximo que se repite un sujeto con dato atipico: ',np.max(list(repeticiones.values())))
-index_to_delete=list(dict(filter(lambda x: x[1] > 8, repeticiones.items())).keys())
-data_Comp_copy.drop(index_to_delete, inplace = True)
+    #     if porcentaje<=5 and bandera==True:
+    #         data_Comp_copy.drop(index_to_delete, inplace = True)
+    #         bandera=False
+    #         print(porcentaje)
+    #         print(bandera)
+    #     if porcentaje>=5:
+    #         print(porcentaje)
+    #         print(bandera)
+        
+
+        
+        
+# repeticiones=collections.Counter(lista_indices_com)  
+# print('valor maximo que se repite un sujeto con dato atipico: ',np.max(list(repeticiones.values())))
+# index_to_delete=list(dict(filter(lambda x: x[1] > 8, repeticiones.items())).keys())
+# data_Comp_copy.drop(index_to_delete, inplace = True)
 for db in databases:
     print('\nBase de datos '+db)
     print('Original')
@@ -76,7 +111,7 @@ for db in databases:
     print(data_Comp_copy[data_Comp_copy['database']==db].shape)
     print('Porcentaje que se elimino %',100-data_Comp_copy[data_Comp_copy['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0])
 data_Comp_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather')
-
+print('\nFinalización de eliminación de datos atipicos de componentes')
 
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
 bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
@@ -99,7 +134,7 @@ for i in componentes_bandas:
     d_sep= d_sep.rename(columns={i:'Power'})
     d_long=d_long.append(d_sep,ignore_index = True) #Uno el dataframe 
 d_long.to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados_sin_atipicos.feather')
-print('Finalización de eliminación de datos atipicos')
+
 
 
 # Eliminación de datos atipicos por ROIs
@@ -124,10 +159,12 @@ databases=data_roi['database'].unique()
 controles=data_roi[data_roi['group']=='Control']
 diccionario_roi={}
 lista_indices_roi=[]
-for r in rois_bandas:
-    for db in databases:
+for db in databases:
+    datos_db=controles[controles['database']==db]
+    indices_db=[]
+    for r in rois_bandas:
         #print(band+' '+com+ ' '+db)
-        datos_db=controles[controles['database']==db]
+        
         Q1 = np.percentile(datos_db[r], 25, interpolation = 'midpoint')
         Q3 = np.percentile(datos_db[r], 75,interpolation = 'midpoint')
         IQR = Q3 - Q1
@@ -149,15 +186,31 @@ for r in rois_bandas:
             ''' Removing the Outliers '''
             #data_Comp_copy.drop(lower, inplace = True)
         indices=upper+lower
-        diccionario_roi[r+'_'+db]=indices
-        lista_indices_roi.extend(indices)
-        #print(diccionario_roi[r+'_'+db])
-        #print(lista_indices_roi)
+        #lista_indices_roi.extend(indices)
+        indices_db.extend(indices)
+  
+    #diccionario[db]=indices_db
+    repeticiones=collections.Counter(indices_db)
+    bandera=True
+    print("\n"+db)
+    i=2
+    while(bandera):
+        i+=1
+        data_roi_prueba=data_roi.copy()
+        index_to_delete=list(dict(filter(lambda x: x[1] > i, repeticiones.items())).keys())
+        data_roi_prueba.drop(index_to_delete, inplace = True)
+        porcentaje=100-data_roi_prueba[data_roi_prueba['database']==db].shape[0]*100/data_roi[data_roi['database']==db].shape[0]
+        if porcentaje<=5:
+            data_roi_copy.drop(index_to_delete, inplace = True)
+            bandera=False
+            print(porcentaje)
+    
+       
         
-repeticiones_roi=collections.Counter(lista_indices_roi)  
-print('valor maximo que se repite un sujeto con dato atipico: ',np.max(list(repeticiones_roi.values())))
-index_to_delete_roi=list(dict(filter(lambda x: x[1] >= 6, repeticiones_roi.items())).keys())
-data_roi_copy.drop(index_to_delete_roi, inplace = True)
+# repeticiones_roi=collections.Counter(lista_indices_roi)  
+# print('valor maximo que se repite un sujeto con dato atipico: ',np.max(list(repeticiones_roi.values())))
+# index_to_delete_roi=list(dict(filter(lambda x: x[1] >= 6, repeticiones_roi.items())).keys())
+# data_roi_copy.drop(index_to_delete_roi, inplace = True)
 for db in databases:
     print('\nBase de datos '+db)
     print('Original')
@@ -166,7 +219,7 @@ for db in databases:
     print(data_roi_copy[data_roi_copy['database']==db].shape)
     print('Porcentaje que se elimino %',100-data_roi_copy[data_roi_copy['database']==db].shape[0]*100/data_roi[data_roi['database']==db].shape[0])
 data_roi_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas_sin_atipicos.feather')
-
+print('\nFinalización de eliminación de datos atipicos de ROIs')
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
 bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
 d_long=pd.DataFrame(columns=['participant_id', 'visit', 'group', 'condition', 'database', 'age','sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S', 'Power', 'Band', 'ROI'])
@@ -187,11 +240,10 @@ for i in rois_bandas:
     d_sep= d_sep.rename(columns={i:'Power'})
     d_long=d_long.append(d_sep,ignore_index = True) #Uno el dataframe 
 
-d_long['group'].replace({'G1':'Control','G2':'Control','CTR':'Control'}, inplace=True) ##Para que estos de biomarcadores queden como controles
 d_long.to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados_sin_atipicos.feather')
 
 
-print('valelinda')
+
         
 
 
