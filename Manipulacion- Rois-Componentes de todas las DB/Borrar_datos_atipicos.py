@@ -9,7 +9,8 @@ import pandas as pd
 import warnings
 import collections
 
-#componentes=['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25']
+# Eliminación de datos atipicos por componentes
+
 componentes_bandas=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
        'C14_rBeta1', 'C14_rBeta2', 'C14_rBeta3', 'C14_rGamma', 'C15_rDelta',
        'C15_rTheta', 'C15_rAlpha-1', 'C15_rAlpha-2', 'C15_rBeta1',
@@ -42,67 +43,49 @@ for db in databases:
         #print(band+' '+com+ ' '+db)
         Q1 = np.percentile(datos_db[com], 25, interpolation = 'midpoint')
         Q3 = np.percentile(datos_db[com], 75,interpolation = 'midpoint')
-        IQR = Q3 - Q1
+        IQR = Q3 - Q1 
         #print("Old Shape: ", data_Comp_copy.shape)
-        dataupper=datos_db[datos_db[com] >= (Q3+1.5*IQR)]
+        dataupper=datos_db[datos_db[com] >= (Q3+1.5*IQR)]#Valores atipicos superiores
         if dataupper.empty:
             upper=[]
         else:
             #print(dataupper)
-            upper=dataupper.index.tolist()
+            upper=dataupper.index.tolist() #lista de indices del dataframe que son valores atipicos
             ''' Removing the Outliers '''
             #data_Comp_copy.drop(upper, inplace = True)
-        datalower=datos_db[datos_db[com] <= (Q1-1.5*IQR)]
+        datalower=datos_db[datos_db[com] <= (Q1-1.5*IQR)]#Valores atipicos inferiores
         if datalower.empty:
             lower=[]
         else:
             #print(datalower)
-            lower=datalower.index.tolist()
+            lower=datalower.index.tolist()#lista de indices del dataframe que son valores atipicos
             ''' Removing the Outliers '''
             #data_Comp_copy.drop(lower, inplace = True)
-        indices=upper+lower
+        indices=upper+lower #union de upper y lower de indices del dataframe que son valores atipicos
         #lista_indices_com.extend(indices)
-        indices_db.extend(indices)
+        indices_db.extend(indices) #Se tiene una lista de indices por cada base de datos
   
     #diccionario[db]=indices_db
-    repeticiones=collections.Counter(indices_db)
+    repeticiones=collections.Counter(indices_db) #Diccionario que contiene cuantas veces un indice(sujeto) tiene un dato atipico, en una banda de una componente
     bandera=True
-    print("\n"+db)
+    #print("\n"+db)
     i=2
-    while(bandera):
-        i+=1
-        data_Comp_prueba=data_Comp.copy()
-        index_to_delete=list(dict(filter(lambda x: x[1] > i, repeticiones.items())).keys())
-        data_Comp_prueba.drop(index_to_delete, inplace = True)
-        porcentaje=100-data_Comp_prueba[data_Comp_prueba['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0]
+    while(bandera):#Mientras no se encuentre el porcentaje de perdida requerido
+        i+=1 #se aumenta cada que se entra al while
+        data_Comp_prueba=data_Comp.copy()#  copia de data frame para no borrar datos del dataframe original,se crea cada que se entra al while
+        index_to_delete=list(dict(filter(lambda x: x[1] > i, repeticiones.items())).keys()) # se crea una lista de los indices cuyas repeticiones de datos atipicos es mayor a i
+        data_Comp_prueba.drop(index_to_delete, inplace = True)#Se borran los indices del dataframe de prueba para saber el porcentaje de datos borrados
+        porcentaje=100-data_Comp_prueba[data_Comp_prueba['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0]#porcentaje de datos borrados
         if porcentaje<=5:
+            #Si el procentaje borrado por primera vez es menor o igual a 5, se borra del dataframe copia los indices que dan el resultado deseado
             data_Comp_copy.drop(index_to_delete, inplace = True)
-            bandera=False
-            print(porcentaje)
+            bandera=False #se cambia la bandera para que no entre mas al while
+            #print(porcentaje)
        
 
-    # for i in range(2,np.max(list(repeticiones.values())),1):
-    #     data_Comp_prueba=data_Comp.copy()
-    #     index_to_delete=list(dict(filter(lambda x: x[1] > i, repeticiones.items())).keys())
-    #     data_Comp_prueba.drop(index_to_delete, inplace = True)
-    #     porcentaje=100-data_Comp_prueba[data_Comp_prueba['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0]
-        
-    #     if porcentaje<=5 and bandera==True:
-    #         data_Comp_copy.drop(index_to_delete, inplace = True)
-    #         bandera=False
-    #         print(porcentaje)
-    #         print(bandera)
-    #     if porcentaje>=5:
-    #         print(porcentaje)
-    #         print(bandera)
-        
 
-        
-        
-# repeticiones=collections.Counter(lista_indices_com)  
-# print('valor maximo que se repite un sujeto con dato atipico: ',np.max(list(repeticiones.values())))
-# index_to_delete=list(dict(filter(lambda x: x[1] > 8, repeticiones.items())).keys())
-# data_Comp_copy.drop(index_to_delete, inplace = True)
+#Para observar un resumen de los datos antes y despues de eliminar sujetos con mayor cantidad de datos atipicos
+
 for db in databases:
     print('\nBase de datos '+db)
     print('Original')
@@ -112,6 +95,8 @@ for db in databases:
     print('Porcentaje que se elimino %',100-data_Comp_copy[data_Comp_copy['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0])
 data_Comp_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather')
 print('\nFinalización de eliminación de datos atipicos de componentes')
+
+#Se crea el dataframe en formato long a partir del dataframe sin atipicos, para hacer los graficos
 
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
 bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
@@ -192,7 +177,7 @@ for db in databases:
     #diccionario[db]=indices_db
     repeticiones=collections.Counter(indices_db)
     bandera=True
-    print("\n"+db)
+    #print("\n"+db)
     i=2
     while(bandera):
         i+=1
@@ -203,7 +188,7 @@ for db in databases:
         if porcentaje<=5:
             data_roi_copy.drop(index_to_delete, inplace = True)
             bandera=False
-            print(porcentaje)
+            #print(porcentaje)
     
        
         
