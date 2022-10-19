@@ -93,6 +93,7 @@ for db in databases:
     print('Despues de eliminar datos atipicos')
     print(data_Comp_copy[data_Comp_copy['database']==db].shape)
     print('Porcentaje que se elimino %',100-data_Comp_copy[data_Comp_copy['database']==db].shape[0]*100/data_Comp[data_Comp['database']==db].shape[0])
+data_Comp_copy.drop(columns='index')
 data_Comp_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather')
 print('\nFinalización de eliminación de datos atipicos de componentes')
 
@@ -203,6 +204,7 @@ for db in databases:
     print('Despues de eliminar datos atipicos')
     print(data_roi_copy[data_roi_copy['database']==db].shape)
     print('Porcentaje que se elimino %',100-data_roi_copy[data_roi_copy['database']==db].shape[0]*100/data_roi[data_roi['database']==db].shape[0])
+data_roi.drop(columns='index')
 data_roi_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas_sin_atipicos.feather')
 print('\nFinalización de eliminación de datos atipicos de ROIs')
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
