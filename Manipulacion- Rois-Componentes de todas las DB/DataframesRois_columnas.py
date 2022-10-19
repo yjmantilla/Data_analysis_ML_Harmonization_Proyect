@@ -212,7 +212,7 @@ for i in rois:
     d_sep['ROI']=[r]*len(d_sep)
     d_sep= d_sep.rename(columns={i:'Power'})
     d_long=d_long.append(d_sep,ignore_index = True) #Uno el dataframe 
-
+d_long['ROI']=d_long['ROI'].replace({'ROI_':''}, regex=True)#Quito el _ y lo reemplazo con '' 
 d_long['group'].replace({'G1':'Control','G2':'Control','CTR':'Control'}, inplace=True) ##Para que estos de biomarcadores queden como controles
 d_long.to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados.feather')
 print('valelinda')

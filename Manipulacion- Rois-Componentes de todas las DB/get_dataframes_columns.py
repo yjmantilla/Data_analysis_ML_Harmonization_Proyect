@@ -178,13 +178,13 @@ def get_dataframe_columnsROI_Coherencia(THE_DATASET):
     print('Done!')
 
 ##Para obtener los datos por columnas de SL por sujeto
-# get_dataframe_columnsROI_SL(BIOMARCADORES_CE)
-# get_dataframe_columnsROI_SL(DUQUE)
+#get_dataframe_columnsROI_SL(BIOMARCADORES_CE)
+get_dataframe_columnsROI_SL(DUQUE)
 # get_dataframe_columnsROI_SL(CHBMP)
 # get_dataframe_columnsROI_SL(SRM)
 
 ##Para obtener los datos por columnas de coherencia
 #get_dataframe_columnsROI_Coherencia(BIOMARCADORES_CE)
 #get_dataframe_columnsROI_Coherencia(DUQUE)
-get_dataframe_columnsROI_Coherencia(CHBMP)
-get_dataframe_columnsROI_Coherencia(SRM)
+# get_dataframe_columnsROI_Coherencia(CHBMP)
+# get_dataframe_columnsROI_Coherencia(SRM)
