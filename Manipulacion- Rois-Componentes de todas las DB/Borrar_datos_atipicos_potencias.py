@@ -8,7 +8,7 @@ from scipy import stats
 import pandas as pd
 import warnings
 import collections
-
+import dataframe_image as dfi
 # Eliminación de datos atipicos por componentes
 
 componentes_bandas=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
@@ -96,6 +96,19 @@ for db in databases:
 data_Comp_copy.drop(columns='index')
 data_Comp_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather')
 print('\nFinalización de eliminación de datos atipicos de componentes')
+
+#Ver edad, educacion y genero
+#Base de datos general
+datos_estadisticos=data_Comp_copy.groupby(['group']).describe(include='all')
+table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
+dfi.export(table, 'Manipulacion- Rois-Componentes de todas las DB\Tablas_datos\Tabla_edad_escolaridad_sexo_todasBD_componentes.png')
+print(data_Comp_copy.groupby(['group']).describe().loc[:,['age','education']])#Medice solo el promedio pero por grupo de tda la base de datos
+#print(data_Comp_copy.loc[:,['sex','group']].groupby(['sex','group']).size() )
+#Por cada base de datos
+datos_estadisticos=data_Comp_copy.groupby(['group','database']).describe(include='all')
+print(datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]])
+table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
+dfi.export(table, 'Manipulacion- Rois-Componentes de todas las DB\Tablas_datos\Tabla_edad_escolaridad_sexo_separadoBD_componentes.png')
 
 #Se crea el dataframe en formato long a partir del dataframe sin atipicos, para hacer los graficos
 
@@ -204,9 +217,23 @@ for db in databases:
     print('Despues de eliminar datos atipicos')
     print(data_roi_copy[data_roi_copy['database']==db].shape)
     print('Porcentaje que se elimino %',100-data_roi_copy[data_roi_copy['database']==db].shape[0]*100/data_roi[data_roi['database']==db].shape[0])
-data_roi.drop(columns='index')
+data_roi_copy.drop(columns='index')
 data_roi_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas_sin_atipicos.feather')
 print('\nFinalización de eliminación de datos atipicos de ROIs')
+
+datos_estadisticos=data_roi_copy.groupby(['group']).describe(include='all')
+table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
+dfi.export(table, 'Manipulacion- Rois-Componentes de todas las DB\Tablas_datos\Tabla_edad_escolaridad_sexo_todasBD_roi.png')
+print(data_Comp.groupby(['group']).describe().loc[:,['age','education']])#Medice solo el promedio pero por grupo de tda la base de datos
+#print(data_Comp.loc[:,['sex','group']].groupby(['sex','group']).size() )
+#Por cada base de datos
+datos_estadisticos=data_roi_copy.groupby(['group','database']).describe(include='all')
+print(datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]])
+table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
+dfi.export(table, 'Manipulacion- Rois-Componentes de todas las DB\Tablas_datos\Tabla_edad_escolaridad_sexo_separadoBD_roi.png')
+
+
+#Formato para graficos
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
 bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
 d_long=pd.DataFrame(columns=['participant_id', 'visit', 'group', 'condition', 'database', 'age','sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S', 'Power', 'Band', 'ROI'])
