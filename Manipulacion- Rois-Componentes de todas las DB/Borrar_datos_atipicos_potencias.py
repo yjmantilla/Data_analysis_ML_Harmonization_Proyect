@@ -98,6 +98,9 @@ data_Comp_copy.reset_index().to_feather('Manipulacion- Rois-Componentes de todas
 print('\nFinalización de eliminación de datos atipicos de componentes')
 
 #Ver edad, educacion y genero
+#link de ayuda
+#https://pandas.pydata.org/docs/user_guide/indexing.html
+# https://kanoki.org/2022/07/25/pandas-select-slice-rows-columns-multiindex-dataframe/
 #Base de datos general
 datos_estadisticos=data_Comp_copy.groupby(['group']).describe(include='all')
 table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
