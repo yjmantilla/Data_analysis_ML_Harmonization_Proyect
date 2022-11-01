@@ -83,8 +83,15 @@ Funciones de armonización y reducción de dimensiones
 '''
 
 def Silhoutte_graficos(X,n_clusters,carpeta,tipo,grupo):
-    #Graficos
     
+    #Crear directorio antes de guardar si no se encuentra
+    try:
+        os.mkdir("Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}".format(carpeta=carpeta,tipo=tipo))
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+    
+    #Graficos
     # Create a subplot with 1 row and 2 columns
     fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.set_size_inches(18, 7)
@@ -185,15 +192,11 @@ def Silhoutte_graficos(X,n_clusters,carpeta,tipo,grupo):
         fontsize=14,
         fontweight="bold",
     )
-    #Crear directorio antes de guardar si no se encuentra
-    try:
-        os.mkdir("Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}".format(carpeta=carpeta,tipo=tipo))
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+    
     #Se guarda la figura
-    plt.savefig('Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Grafico_{n_clusters}_componentes_{grupo}_{tipo}.png'.format(carpeta=carpeta,n_clusters=n_clusters,tipo=tipo, grupo=grupo))
+    plt.savefig('Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}\\Grafico_{n_clusters}_componentes_{grupo}_{tipo}.png'.format(carpeta=carpeta,n_clusters=n_clusters,tipo=tipo, grupo=grupo))
     plt.close()
+    return fig
 
 
 
@@ -231,7 +234,7 @@ def explained_variance_ratio(data,carpeta,tipo):
     plt.title('Explained Variance Ratio by Number of Principal Components\n'+'Optimal k: '+str(kn.knee))
     plt.xlabel('Number of Principal Components')
     plt.ylabel('Explained Variance Ratio')
-    plt.savefig('Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Grafico_explanined_variance_ratio_{tipo}.png'.format(carpeta=carpeta,tipo=tipo))
+    plt.savefig('Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}\\Grafico_explanined_variance_ratio_{tipo}.png'.format(carpeta=carpeta,tipo=tipo))
     plt.close()
     return kn.knee
     
@@ -300,9 +303,6 @@ def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
 columnas_covars=['SITE', 'SEXO', 'EDAD', 'ESCOLARIDAD', 'MMSE','CDR_TOTAL', 'CDR_SOB','STATUS_AD', 'STATUS_DCL', 'STATUS_CN_AD', 'STATUS_CN_DCL']
 
 
-harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars,carpeta='Todoslosgrupos\\todaslascolumnas',grupo='Todos_los_datos')
-harmonization_graficos(datos,columnas=subcorticales,col_covars=columnas_covars,carpeta='Todoslosgrupos\\subcorticales',grupo='Todos_los_datos')
-harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars,carpeta='Todoslosgrupos\\corticales',grupo='Todos_los_datos')
 
 for i in Conjuntos.keys():
     #Todos los grupos juntos separados por area, espesor, curvatura media y volumen
@@ -310,17 +310,20 @@ for i in Conjuntos.keys():
     status=['AD', 'DCL','CN_AD', 'CN_DCL' ]
     for s in status:
         #por cada grupo tomo proceso por area, espesor, curvatura media y volumen
-        harmonization_graficos(datos[datos['STATUS']==s],columnas=Conjuntos[i],col_covars=columnas_covars[:8],carpeta=s+'\\'+i,grupo=i+'_datosdelgrupo_'+s)
+        harmonization_graficos(datos[datos['STATUS']==s],columnas=Conjuntos[i],col_covars=columnas_covars[:7],carpeta=s+'\\'+i,grupo=i+'_datosdelgrupo_'+s)
         
 status=['AD', 'DCL','CN_AD', 'CN_DCL' ]
 for s in status:
     #por acad grupo hago todas las columnas
-    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars[:8],carpeta=s+'\\todaslascolumnas',grupo=i+'_datosdelgrupo_'+s)
+    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars[:7],carpeta=s+'\\todaslascolumnas',grupo=i+'_datosdelgrupo_'+s)
     #por acad grupo hago solo subcorticales
-    harmonization_graficos(datos[datos['STATUS']==s],columnas=subcorticales,col_covars=columnas_covars[:8],carpeta=s+'\\subcorticales',grupo=i+'_datosdelgrupo_'+s)
+    harmonization_graficos(datos[datos['STATUS']==s],columnas=subcorticales,col_covars=columnas_covars[:7],carpeta=s+'\\subcorticales',grupo=i+'_datosdelgrupo_'+s)
     #por acad grupo hago solo corticales
-    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars[:8],carpeta=s+'\\corticales',grupo=i+'_datosdelgrupo_'+s)
+    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars[:7],carpeta=s+'\\corticales',grupo=i+'_datosdelgrupo_'+s)
             
+harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars,carpeta='Todoslosgrupos\\todaslascolumnas',grupo='Todos_los_datos')
+harmonization_graficos(datos,columnas=subcorticales,col_covars=columnas_covars,carpeta='Todoslosgrupos\\subcorticales',grupo='Todos_los_datos')
+harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars,carpeta='Todoslosgrupos\\corticales',grupo='Todos_los_datos')
 
 #    
 
