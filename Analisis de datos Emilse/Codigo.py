@@ -73,7 +73,7 @@ for i in range(len(col_completas)):
         curv_med.append(col_completas[i])
     elif 'thickness' in col_completas[i]:
         espesor.append(col_completas[i])
-Conjuntos={'area':area,'curvatura_media':curv_med,'espesor':espesor,'volumen':volumen}
+Conjuntos={'curvaturamedia':curv_med,'area':area,'espesor':espesor,'volumen':volumen}
 datosvacios=datos.isnull().sum() 
 print('Cantidad de datos vacios',datosvacios) #No hay datos vacios
 
@@ -194,9 +194,9 @@ def Silhoutte_graficos(X,n_clusters,carpeta,tipo,grupo):
     )
     
     #Se guarda la figura
-    plt.savefig('Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}\\Grafico_{n_clusters}_componentes_{grupo}_{tipo}.png'.format(carpeta=carpeta,n_clusters=n_clusters,tipo=tipo, grupo=grupo))
+    plt.savefig("Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Componentes{n_clusters}_{grupo}.png".format(carpeta=carpeta,n_clusters=n_clusters,tipo=tipo, grupo=grupo))
     plt.close()
-    return fig
+    
 
 
 
@@ -224,6 +224,7 @@ def explained_variance_ratio(data,carpeta,tipo):
         os.mkdir("Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}".format(carpeta=carpeta,tipo=tipo))
     except OSError as e:
         if e.errno != errno.EEXIST:
+            print('valelinda')
             raise
     pca = PCA(n_components=10).fit(data)
     kn = KneeLocator(range(1,pca.n_components+1), pca.explained_variance_ratio_, curve='convex', direction='decreasing')
@@ -234,7 +235,7 @@ def explained_variance_ratio(data,carpeta,tipo):
     plt.title('Explained Variance Ratio by Number of Principal Components\n'+'Optimal k: '+str(kn.knee))
     plt.xlabel('Number of Principal Components')
     plt.ylabel('Explained Variance Ratio')
-    plt.savefig('Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}\\Grafico_explanined_variance_ratio_{tipo}.png'.format(carpeta=carpeta,tipo=tipo))
+    plt.savefig('Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Grafico_explanined_variance_ratio_{tipo}.png'.format(carpeta=carpeta,tipo=tipo))
     plt.close()
     return kn.knee
     
@@ -255,8 +256,8 @@ def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
     #Explained variance ratio
     k_armonizado=explained_variance_ratio(pd.DataFrame(data_harmonized),carpeta=carpeta,tipo='PCA_datos_armonizados')
     k_sin_armonizar=explained_variance_ratio(pd.DataFrame(my_data),carpeta=carpeta,tipo='PCA_datos_originales')
-    elbow(pd.DataFrame(data_harmonized),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_armonizados')
-    elbow(pd.DataFrame(my_data),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_originales')
+    #elbow(pd.DataFrame(data_harmonized),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_armonizados')
+    #elbow(pd.DataFrame(my_data),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_original´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´......................7
   
     for comp in range(2,11,1):
         #PCA datos armonizados
@@ -302,24 +303,22 @@ def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
 #Para todos los datos
 columnas_covars=['SITE', 'SEXO', 'EDAD', 'ESCOLARIDAD', 'MMSE','CDR_TOTAL', 'CDR_SOB','STATUS_AD', 'STATUS_DCL', 'STATUS_CN_AD', 'STATUS_CN_DCL']
 
-
+status=['AD', 'DCL','CN_AD', 'CN_DCL' ]
 
 for i in Conjuntos.keys():
     #Todos los grupos juntos separados por area, espesor, curvatura media y volumen
     harmonization_graficos(datos,columnas=Conjuntos[i],col_covars=columnas_covars,carpeta='Todoslosgrupos\\'+i,grupo=i+'_Todostodoslosdatos')
-    status=['AD', 'DCL','CN_AD', 'CN_DCL' ]
     for s in status:
         #por cada grupo tomo proceso por area, espesor, curvatura media y volumen
         harmonization_graficos(datos[datos['STATUS']==s],columnas=Conjuntos[i],col_covars=columnas_covars[:7],carpeta=s+'\\'+i,grupo=i+'_datosdelgrupo_'+s)
-        
-status=['AD', 'DCL','CN_AD', 'CN_DCL' ]
+
 for s in status:
     #por acad grupo hago todas las columnas
-    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars[:7],carpeta=s+'\\todaslascolumnas',grupo=i+'_datosdelgrupo_'+s)
+    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars[:7],carpeta=s+'\\todaslascolumnas',grupo='_datosdelgrupo_'+s)
     #por acad grupo hago solo subcorticales
-    harmonization_graficos(datos[datos['STATUS']==s],columnas=subcorticales,col_covars=columnas_covars[:7],carpeta=s+'\\subcorticales',grupo=i+'_datosdelgrupo_'+s)
+    harmonization_graficos(datos[datos['STATUS']==s],columnas=subcorticales,col_covars=columnas_covars[:7],carpeta=s+'\\subcorticales',grupo='_datosdelgrupo_'+s)
     #por acad grupo hago solo corticales
-    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars[:7],carpeta=s+'\\corticales',grupo=i+'_datosdelgrupo_'+s)
+    harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars[:7],carpeta=s+'\\corticales',grupo='_datosdelgrupo_'+s)
             
 harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars,carpeta='Todoslosgrupos\\todaslascolumnas',grupo='Todos_los_datos')
 harmonization_graficos(datos,columnas=subcorticales,col_covars=columnas_covars,carpeta='Todoslosgrupos\\subcorticales',grupo='Todos_los_datos')
