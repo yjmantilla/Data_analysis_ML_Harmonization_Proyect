@@ -73,7 +73,10 @@ for i in range(len(col_completas)):
         curv_med.append(col_completas[i])
     elif 'thickness' in col_completas[i]:
         espesor.append(col_completas[i])
-Conjuntos={'curvaturamedia':curv_med,'area':area,'espesor':espesor,'volumen':volumen}
+
+Conjuntos={'espesor':espesor,'volumen':volumen,'curvaturamedia':curv_med,'area':area}
+
+#datos.iloc[:,3:]=datos.iloc[:,3:].astype(np.float32)
 datosvacios=datos.isnull().sum() 
 print('Cantidad de datos vacios',datosvacios) #No hay datos vacios
 
@@ -83,7 +86,7 @@ Funciones de armonización y reducción de dimensiones
 '''
 
 def Silhoutte_graficos(X,n_clusters,carpeta,tipo,grupo):
-    
+    X=X.astype(np.float64)
     #Crear directorio antes de guardar si no se encuentra
     try:
         os.mkdir("Analisis de datos Emilse\\Graficos\\{carpeta}\\{tipo}".format(carpeta=carpeta,tipo=tipo))
@@ -196,7 +199,7 @@ def Silhoutte_graficos(X,n_clusters,carpeta,tipo,grupo):
     #Se guarda la figura
     plt.savefig("Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Componentes{n_clusters}_{grupo}.png".format(carpeta=carpeta,n_clusters=n_clusters,tipo=tipo, grupo=grupo))
     plt.close()
-    
+    print("Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Componentes{n_clusters}_{grupo}.png".format(carpeta=carpeta,n_clusters=n_clusters,tipo=tipo, grupo=grupo))
 
 
 
@@ -237,6 +240,7 @@ def explained_variance_ratio(data,carpeta,tipo):
     plt.ylabel('Explained Variance Ratio')
     plt.savefig('Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Grafico_explanined_variance_ratio_{tipo}.png'.format(carpeta=carpeta,tipo=tipo))
     plt.close()
+    print('Analisis de datos Emilse\Graficos\{carpeta}\{tipo}\Grafico_explanined_variance_ratio_{tipo}.png'.format(carpeta=carpeta,tipo=tipo))
     return kn.knee
     
 def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
@@ -257,8 +261,7 @@ def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
     k_armonizado=explained_variance_ratio(pd.DataFrame(data_harmonized),carpeta=carpeta,tipo='PCA_datos_armonizados')
     k_sin_armonizar=explained_variance_ratio(pd.DataFrame(my_data),carpeta=carpeta,tipo='PCA_datos_originales')
     #elbow(pd.DataFrame(data_harmonized),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_armonizados')
-    #elbow(pd.DataFrame(my_data),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_original´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´´......................7
-  
+    #elbow(pd.DataFrame(my_data),carpeta=carpeta,grupo=grupo,tipo='PCA_datos_original)
     for comp in range(2,11,1):
         #PCA datos armonizados
         pca=PCA(n_components=comp) # Otra opción es instanciar pca sólo con dimensiones nuevas hasta obtener un mínimo "explicado" ej.: pca=PCA(.85)
@@ -279,21 +282,21 @@ def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
         Silhoutte_graficos(X_TSNE1,n_clusters=comp,carpeta=carpeta,tipo='T_SNE_datos_originales',grupo=grupo)
         
         #UMAP datos armonizados
-        d_UMAP = umap.UMAP(n_neighbors=comp,min_dist=0.3,metric='correlation').fit_transform(data_harmonized)
+        d_UMAP = umap.UMAP(n_neighbors=comp).fit_transform(data_harmonized)
         Silhoutte_graficos(d_UMAP,n_clusters=comp,carpeta=carpeta,tipo='UMAP_datos_armonizados',grupo=grupo)
         #UMAP datos sin armonizar
-        d_UMAP1 = umap.UMAP(n_neighbors=comp,min_dist=0.3,metric='correlation').fit_transform(my_data)
+        d_UMAP1 = umap.UMAP(n_neighbors=comp).fit_transform(my_data)
         Silhoutte_graficos(d_UMAP1,n_clusters=comp,carpeta=carpeta,tipo='UMAP_datos_originales',grupo=grupo)
 
         if comp==k_armonizado:
             X_TSNE_pca = TSNE(n_components=comp,method='exact').fit_transform(X_pca)
             Silhoutte_graficos(X_TSNE_pca,n_clusters=comp,carpeta=carpeta,tipo='T_SNE_desde_PCA_datos_armonizados',grupo=grupo)
-            d_UMAP_pca  = umap.UMAP(n_neighbors=comp,min_dist=0.3,metric='correlation').fit_transform(X_pca)
+            d_UMAP_pca  = umap.UMAP(n_neighbors=comp).fit_transform(X_pca)
             Silhoutte_graficos(d_UMAP_pca,n_clusters=comp,carpeta=carpeta,tipo='UMAP_desde_PCA_datos_armonizados',grupo=grupo)
         if comp==k_sin_armonizar:
             X_TSNE_pca_o = TSNE(n_components=comp,method='exact').fit_transform(X_pca1)
             Silhoutte_graficos(X_TSNE_pca_o,n_clusters=comp,carpeta=carpeta,tipo='T_SNE_desde_PCA_datos_originales',grupo=grupo)
-            d_UMAP_pca_o  = umap.UMAP(n_neighbors=comp,min_dist=0.3,metric='correlation').fit_transform(X_pca1)
+            d_UMAP_pca_o  = umap.UMAP(n_neighbors=comp).fit_transform(X_pca1)
             Silhoutte_graficos(d_UMAP_pca_o,n_clusters=comp,carpeta=carpeta,tipo='UMAP_desde_PCA_datos_originales',grupo=grupo)
 
     
@@ -302,15 +305,11 @@ def harmonization_graficos(data,columnas,col_covars,grupo,carpeta):
 
 #Para todos los datos
 columnas_covars=['SITE', 'SEXO', 'EDAD', 'ESCOLARIDAD', 'MMSE','CDR_TOTAL', 'CDR_SOB','STATUS_AD', 'STATUS_DCL', 'STATUS_CN_AD', 'STATUS_CN_DCL']
+harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars,carpeta='Todoslosgrupos\\todaslascolumnas',grupo='Todos_los_datos')
+harmonization_graficos(datos,columnas=subcorticales,col_covars=columnas_covars,carpeta='Todoslosgrupos\\subcorticales',grupo='Todos_los_datos')
+harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars,carpeta='Todoslosgrupos\\corticales',grupo='Todos_los_datos')
 
 status=['AD', 'DCL','CN_AD', 'CN_DCL' ]
-
-for i in Conjuntos.keys():
-    #Todos los grupos juntos separados por area, espesor, curvatura media y volumen
-    harmonization_graficos(datos,columnas=Conjuntos[i],col_covars=columnas_covars,carpeta='Todoslosgrupos\\'+i,grupo=i+'_Todostodoslosdatos')
-    for s in status:
-        #por cada grupo tomo proceso por area, espesor, curvatura media y volumen
-        harmonization_graficos(datos[datos['STATUS']==s],columnas=Conjuntos[i],col_covars=columnas_covars[:7],carpeta=s+'\\'+i,grupo=i+'_datosdelgrupo_'+s)
 
 for s in status:
     #por acad grupo hago todas las columnas
@@ -319,11 +318,12 @@ for s in status:
     harmonization_graficos(datos[datos['STATUS']==s],columnas=subcorticales,col_covars=columnas_covars[:7],carpeta=s+'\\subcorticales',grupo='_datosdelgrupo_'+s)
     #por acad grupo hago solo corticales
     harmonization_graficos(datos[datos['STATUS']==s],columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars[:7],carpeta=s+'\\corticales',grupo='_datosdelgrupo_'+s)
-            
-harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen,*subcorticales],col_covars=columnas_covars,carpeta='Todoslosgrupos\\todaslascolumnas',grupo='Todos_los_datos')
-harmonization_graficos(datos,columnas=subcorticales,col_covars=columnas_covars,carpeta='Todoslosgrupos\\subcorticales',grupo='Todos_los_datos')
-harmonization_graficos(datos,columnas=[*area,*curv_med,*espesor,*volumen],col_covars=columnas_covars,carpeta='Todoslosgrupos\\corticales',grupo='Todos_los_datos')
-
-#    
+       
+for i in Conjuntos.keys():
+    #Todos los grupos juntos separados por area, espesor, curvatura media y volumen
+    harmonization_graficos(datos,columnas=Conjuntos[i],col_covars=columnas_covars,carpeta='Todoslosgrupos\\'+i,grupo=i+'_Todostodoslosdatos')
+    for s in status:
+        #por cada grupo tomo proceso por area, espesor, curvatura media y volumen
+        harmonization_graficos(datos[datos['STATUS']==s],columnas=Conjuntos[i],col_covars=columnas_covars[:7],carpeta=s+'\\'+i,grupo=i+'_datosdelgrupo_'+s)
 
 print('Valelinda')

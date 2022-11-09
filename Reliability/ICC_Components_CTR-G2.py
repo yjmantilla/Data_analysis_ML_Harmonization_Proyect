@@ -9,13 +9,20 @@ import scipy.io
 from tokenize import group
 import pingouin as pg
 from scipy import stats
+import dataframe_image as dfi
+import warnings
+from scipy.stats import mannwhitneyu
+warnings.filterwarnings("ignore")
 
-
-datos1=pd.read_feather(r"Reproducibilidad\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_components.feather") 
-datos2=pd.read_feather(r"Reproducibilidad\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_norm_components.feather")
+datos1=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_components.feather") 
+datos2=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_norm_components.feather")
 datos=pd.concat((datos1, datos2))#Original Data
-print(len(datos1))
-print(len(datos2))
+
+N_BIO=pd.read_excel('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Demograficosbiomarcadores.xlsx')
+N_BIO = N_BIO.rename(columns={'Codigo':'Subject','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','Visita':'Session'})
+N_BIO=N_BIO.drop(['MMSE', 'F', 'A', 'S'], axis=1)
+N_BIO['Subject']=N_BIO['Subject'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con '' 
+
 
 def pair_data(datos,components):
     #datos=datos.drop(datos[datos['Session']=='V4P'].index)#Borrar datos
@@ -50,6 +57,26 @@ def pair_data(datos,components):
 
 components=['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25' ] #Neuronal components
 datos=pair_data(datos,components) #Datos filtrados
+N_BIO=N_BIO[N_BIO.Session.isin(['V0'])]
+N_BIO=N_BIO.drop(['Session'], axis=1)
+datos=pd.merge(datos,N_BIO)
+#Datos estadisticos de la edad, escolaridad y sexo
+d_p=datos[datos.Session.isin(['V0'])&datos.Bands.isin(['delta'])&datos.Components.isin(['C14'])&datos.Stage.isin(['Normalized data'])]
+datos_estadisticos=d_p.groupby(['Group']).describe(include='all')
+table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
+dfi.export(table, 'Reliability\Tabla_edad_escolaridad_sexo_separadoreliability.png')
+#Pruebas estadisticas 
+print('\nNormalidad en edad')
+print(pg.normality(data=d_p, dv='age', group='Group',method='shapiro'))
+print('\nNormalidad en educacion')
+print(pg.normality(data=d_p, dv='education', group='Group',method='shapiro'))
+print('\nDiferencias en edad entre grupos U-test')
+print(mannwhitneyu(d_p[d_p.Group.isin(['CTR'])]['age'], d_p[d_p.Group.isin(['G2'])]['age']))
+print('\nDiferencias en escolaridad entre grupos U-test')
+print(mannwhitneyu(d_p[d_p.Group.isin(['CTR'])]['education'], d_p[d_p.Group.isin(['G2'])]['education']))
+## Diferencias estadisticas entre CTR y G2 en cuanto la edad y escolaridad
+
+#Tabla edad escolaridad y genero y valores p asociados a las pruebas 
 
 # ANOVA mix
 print('Anova mix')
@@ -110,5 +137,5 @@ for st in Stage:
         icc_value.append(icc_value)
     icc_value.append(icc_value)
 #print(icc_value)
-icc_value.to_csv(r'Reproducibilidad\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
+icc_value.to_csv(r'Reliability\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
 #matrix_c.to_csv(r'sovaharmony\Reproducibilidad\icc_values_G2-CTR_test.csv',sep=';') 
