@@ -120,7 +120,7 @@ d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
 d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) #Cambio a que queden con sexo F y M
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
 d_B['education'] = d_B['education'].astype('float64')
-d_B['group'].replace({'G1':'Control','G2':'Control','CTR':'Control'}, inplace=True)
+#d_B['group'].replace({'G1':'Control','G2':'Control','CTR':'Control'}, inplace=True)
 
 #print(rp.summary_cont(d_B.groupby(['database', 'age'])['C25_rBeta3']))
 #print(d_B.describe())
@@ -182,6 +182,7 @@ ver_datos_vacios(d_B)
 #Base de datos organizada
 d_B.reset_index().to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas.feather')
 d_B.reset_index().to_csv('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas.csv')
+#d_B=d_B[d_B['database']=='DUQUE']
 #-------------------------------------------------------
 #Formato long
 datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
@@ -213,7 +214,7 @@ for i in rois:
     d_sep= d_sep.rename(columns={i:'Power'})
     d_long=d_long.append(d_sep,ignore_index = True) #Uno el dataframe 
 d_long['ROI']=d_long['ROI'].replace({'ROI_':''}, regex=True)#Quito el _ y lo reemplazo con '' 
-d_long['group'].replace({'G1':'Control','G2':'Control','CTR':'Control'}, inplace=True) ##Para que estos de biomarcadores queden como controles
+#d_long['group'].replace({'G1':'Control','G2':'Control','CTR':'Control'}, inplace=True) ##Para que estos de biomarcadores queden como controles
 d_long.to_feather('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados.feather')
 print('valelinda')
  #------------------------------------------------------
