@@ -3,13 +3,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-#import pingouin as pg
 from scipy import stats
 import pandas as pd
 import warnings
 import collections
 import dataframe_image as dfi
-# Eliminación de datos atipicos por componentes
 
 componentes_bandas=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
        'C14_rBeta1', 'C14_rBeta2', 'C14_rBeta3', 'C14_rGamma', 'C15_rDelta',
@@ -152,7 +150,6 @@ rois_bandas=['ROI_F_rDelta','ROI_C_rDelta', 'ROI_PO_rDelta', 'ROI_T_rDelta', 'RO
        'ROI_C_rBeta2', 'ROI_PO_rBeta2', 'ROI_T_rBeta2', 'ROI_F_rBeta3',
        'ROI_C_rBeta3', 'ROI_PO_rBeta3', 'ROI_T_rBeta3', 'ROI_F_rGamma',
        'ROI_C_rGamma', 'ROI_PO_rGamma', 'ROI_T_rGamma']
-roi=['ROI_F', 'ROI_C','ROI_PO', 'ROI_T']
 
 
 
