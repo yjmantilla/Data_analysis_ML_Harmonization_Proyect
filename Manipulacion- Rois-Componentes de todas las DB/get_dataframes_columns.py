@@ -3,6 +3,7 @@ from bids import BIDSLayout
 import numpy as np
 import re
 import pandas as pd
+from scipy import stats
 from bids.layout import parse_file_entities
 
 BIOMARCADORES_CE = {
@@ -48,7 +49,7 @@ DUQUE = {
 }
 
 def get_dataframe_columnsROI_SL(THE_DATASET): 
-    '''Obtain data frames with SL of ROIs in different columns''' 
+    '''Function that allows to obtain data frames with SL by ROIs in different columns''' 
     input_path = THE_DATASET.get('input_path',None)
     task = THE_DATASET.get('layout',None).get('task',None)
     group_regex = THE_DATASET.get('group_regex',None)
@@ -114,7 +115,7 @@ def get_dataframe_columnsROI_SL(THE_DATASET):
     df.to_feather(r'{input_path}\derivatives\data_sl_column_ROI_norm_{name}.feather'.format(name=name,input_path=input_path))
     print('Done!')
 def get_dataframe_columnsROI_Coherencia(THE_DATASET): 
-    '''Obtain data frames with powers of ROIs in different columns''' 
+    '''Function that allows to obtain data frames with coherence values in different columns''' 
     input_path = THE_DATASET.get('input_path',None)
     task = THE_DATASET.get('layout',None).get('task',None)
     group_regex = THE_DATASET.get('group_regex',None)
@@ -125,7 +126,6 @@ def get_dataframe_columnsROI_Coherencia(THE_DATASET):
     layout.get(scope='derivatives', return_type='file')
     eegs_powers= layout.get(extension='.txt', task=task,suffix='norm', return_type='filename')
     eegs_powers = [x for x in eegs_powers if f'desc-channel[{runlabel}]_coherence_band' in x]
-    #eegs_powers = [x for x in eegs_powers if 'coherence_band' in x]
 
     F = ['FP1', 'FPZ', 'FP2', 'AF3', 'AF4', 'F7', 'F5', 'F3', 'F1', 'FZ', 'F2', 'F4', 'F6', 'F8'] 
     T = ['FT7', 'FC5', 'FC6', 'FT8', 'T7', 'C5', 'C6', 'T8', 'TP7', 'CP5', 'CP6', 'TP8']
@@ -178,7 +178,7 @@ def get_dataframe_columnsROI_Coherencia(THE_DATASET):
     print('Done!')
 
 def get_dataframe_columns_entropy(THE_DATASET): 
-    '''Obtain data frames with powers of ROIs in different columns''' 
+    '''Function that allows to obtain data frames with entropy values by ROIs in different columns''' 
     input_path = THE_DATASET.get('input_path',None)
     task = THE_DATASET.get('layout',None).get('task',None)
     group_regex = THE_DATASET.get('group_regex',None)
@@ -189,7 +189,6 @@ def get_dataframe_columns_entropy(THE_DATASET):
     layout.get(scope='derivatives', return_type='file')
     eegs_powers= layout.get(extension='.txt', task=task,suffix='norm', return_type='filename')
     eegs_powers = [x for x in eegs_powers if f'desc-channel[{runlabel}]_entropy_band' in x]
-    #eegs_powers = [x for x in eegs_powers if 'coherence_band' in x]
 
     F = ['FP1', 'FPZ', 'FP2', 'AF3', 'AF4', 'F7', 'F5', 'F3', 'F1', 'FZ', 'F2', 'F4', 'F6', 'F8'] 
     T = ['FT7', 'FC5', 'FC6', 'FT8', 'T7', 'C5', 'C6', 'T8', 'TP7', 'CP5', 'CP6', 'TP8']
@@ -230,11 +229,13 @@ def get_dataframe_columns_entropy(THE_DATASET):
         except:
             datos_1_sujeto['visit']='V0'
         datos_1_sujeto['condition'] = info_bids_sujeto['task']
+ 
         for b,band in enumerate(bandas):
-        
-            c_promedio_roi = np.average(np.array(data['entropy'][band])[1])
-            datos_1_sujeto[f'Entropy_{band.title()}']=c_promedio_roi
-            
+            for r,roi in enumerate(new_rois):
+                e_promedio_roi = np.average(np.array(data['entropy'][band])[roi])
+                datos_1_sujeto[f'Entropy_ROI_{roi_labels[r]}_{band.title()}']=e_promedio_roi
+   
+
         list_subjects.append(datos_1_sujeto)
     df = pd.DataFrame(list_subjects)
     df['database']=[name]*len(list_subjects)
@@ -243,7 +244,7 @@ def get_dataframe_columns_entropy(THE_DATASET):
 
 
 def get_dataframe_columns_cross(THE_DATASET): 
-    '''Obtain data frames with powers of ROIs in different columns''' 
+    '''Function that allows to obtain data frames with cross frequency by ROIs in different columns''' 
     input_path = THE_DATASET.get('input_path',None)
     task = THE_DATASET.get('layout',None).get('task',None)
     group_regex = THE_DATASET.get('group_regex',None)
@@ -295,15 +296,15 @@ def get_dataframe_columns_cross(THE_DATASET):
         except:
             datos_1_sujeto['visit']='V0'
         datos_1_sujeto['condition'] = info_bids_sujeto['task']
-        for b,band in enumerate(bandas):
-        
-            c_promedio_roi = np.average(np.array(data['entropy'][band])[1])
-            datos_1_sujeto[f'Entropy_{band.title()}']=c_promedio_roi
-            
+        for r,roi in enumerate(new_rois):
+            for b,band in enumerate(bandas):
+                e_promedio_roi = np.average(np.array(data['cross_frequency']['pme']['delta'])[roi][:,b])
+         
+                datos_1_sujeto[f'Cross_ROI_{roi_labels[r]}_{band.title()}']=e_promedio_roi
         list_subjects.append(datos_1_sujeto)
     df = pd.DataFrame(list_subjects)
     df['database']=[name]*len(list_subjects)
-    df.to_feather(r'{input_path}\derivatives\data_Entropy_column_norm_{name}.feather'.format(name=name,input_path=input_path))
+    df.to_feather(r'{input_path}\derivatives\data_Cross_Frequency_column_norm_{name}.feather'.format(name=name,input_path=input_path))
     print('Done!')
 
 
@@ -319,5 +320,5 @@ def get_dataframe_columns_cross(THE_DATASET):
 # get_dataframe_columnsROI_Coherencia(CHBMP)
 # get_dataframe_columnsROI_Coherencia(SRM)
 
-#get_dataframe_columns_entropy(DUQUE)
+get_dataframe_columns_entropy(DUQUE)
 get_dataframe_columns_cross(DUQUE)
