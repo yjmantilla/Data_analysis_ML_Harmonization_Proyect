@@ -33,21 +33,6 @@ DUQUE_e=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Entropy_colum
 #Cross frequency Dataframes
 DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Cross_Frequency_column_norm_DUQUE.feather'.format(path=path))
 
-#Power data by ROIs with demographic data
-data_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas_sin_atipicos.feather'.format(path=path))
-data_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas.feather'.format(path=path))
-data_roi=data_roi.drop(columns=['index'])
-#data_roi=data_roi.drop(columns=['level_0','index'])
-data_roi.reset_index(inplace=True, drop=True)
-
-#Independent component power data with demographic data
-data_Comp=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather'.format(path=path))
-data_Comp=pd.read_feather(r'{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather'.format(path=path))
-data_Comp=data_Comp.drop(columns=['index'])
-#data_Comp=data_Comp.drop(columns=['level_0','index']) va este
-data_Comp.reset_index(inplace=True, drop=True)
-
-
 '''The power data by ROIs is merged with the demographic data, 
 first merged for each database and then all the databases are concatenated'''
 
