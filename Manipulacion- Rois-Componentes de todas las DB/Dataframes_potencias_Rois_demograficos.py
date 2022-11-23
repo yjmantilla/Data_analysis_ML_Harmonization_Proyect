@@ -11,6 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import HTML, display_html, display
 import collections
+from Funciones import dataframe_long_roi
+from Funciones import columns_powers_rois
 
 "Power data loading by ROIs"
 
@@ -205,39 +207,5 @@ print('Dataframe de potencias de ROIs por columnas  y con datos demograficos gua
 #d_B=d_B[d_B['database']=='DUQUE']
 
 '''The dataframe is organized with all the powers in a single column to make the graphs in an easier way'''
-
-datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
-bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
-rois=['ROI_F_rDelta','ROI_C_rDelta', 'ROI_PO_rDelta', 'ROI_T_rDelta', 'ROI_F_rTheta',
-       'ROI_C_rTheta', 'ROI_PO_rTheta', 'ROI_T_rTheta', 'ROI_F_rAlpha-1',
-       'ROI_C_rAlpha-1', 'ROI_PO_rAlpha-1', 'ROI_T_rAlpha-1', 'ROI_F_rAlpha-2',
-       'ROI_C_rAlpha-2', 'ROI_PO_rAlpha-2', 'ROI_T_rAlpha-2', 'ROI_F_rBeta1',
-       'ROI_C_rBeta1', 'ROI_PO_rBeta1', 'ROI_T_rBeta1', 'ROI_F_rBeta2',
-       'ROI_C_rBeta2', 'ROI_PO_rBeta2', 'ROI_T_rBeta2', 'ROI_F_rBeta3',
-       'ROI_C_rBeta3', 'ROI_PO_rBeta3', 'ROI_T_rBeta3', 'ROI_F_rGamma',
-       'ROI_C_rGamma', 'ROI_PO_rGamma', 'ROI_T_rGamma']
-roi=['ROI_F', 'ROI_C','ROI_PO', 'ROI_T']
-
-#New dataframe columns
-d_long=pd.DataFrame(columns=['participant_id', 'visit', 'group', 'condition', 'database', 'age','sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S', 'Power', 'Band', 'ROI'])
-
-for i in rois:
-    '''The power column is taken with its respective demographic data and added to the new dataframe.'''
-    datax=datai.copy()
-    datax.append(i)
-    d_sep=d_B.loc[:,datax] #data to be added
-    for j in bandas:
-        if j in i:
-            band=j
-    for c in roi:
-        if c in i:
-            r=c
-    d_sep['Band']=[band]*len(d_sep)
-    d_sep['ROI']=[r]*len(d_sep)
-    d_sep= d_sep.rename(columns={i:'Power'})
-    d_long=d_long.append(d_sep,ignore_index = True) 
-d_long['ROI']=d_long['ROI'].replace({'ROI_':''}, regex=True)#Quito el _ y lo reemplazo con '' 
-
-#Powers are saved in a feather file
-d_long.to_feather('{path}\Datosparaorganizardataframes\Datos_ROI_formatolargo_filtrados.feather'.format(path=path))
+dataframe_long_roi(d_B,'Power',columns=columns_powers_rois,name='Datos_ROI_formatolargo_filtrados',path=path)
 print('Dataframe para hacer graficos de potencias por ROIs guardado ')

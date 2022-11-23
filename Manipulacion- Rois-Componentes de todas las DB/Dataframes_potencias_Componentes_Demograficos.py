@@ -11,7 +11,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import HTML, display_html, display
 import collections
-
+from Funciones import columns_powers_ic
+from Funciones import  dataframe_long_components,dataframe_componentes_deseadas
 
 "Power data loading by independent components"
 
@@ -24,14 +25,7 @@ DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_powers_componen
 datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #Data concatenation
 
 "Only the desired columns are taken from the dataframe"
-columnas_deseadas=['subject', 'visit', 'group','condition','Study','C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25'] #columns of interest
-col_completas=list(datos.columns)
-columnas=[]
-for i in range(len(columnas_deseadas)):
-    for j in range(len(col_completas)):
-        if columnas_deseadas[i] in col_completas[j]:
-            columnas.append(col_completas[j])
-datos1=datos.loc[:,columnas] #Dataframe with columns of interest
+datos1=dataframe_componentes_deseadas(datos,columnas=['subject', 'visit', 'group','condition','Study'])
 
 "Some columns are renamed and their contents are also modified"
 datos1= datos1.rename(columns={'subject':'participant_id','Study':'database'})
@@ -217,45 +211,7 @@ print('Dataframe de potencias de componentes por columnas  y con datos demografi
 #d_B=d_B[d_B['database']=='DUQUE']
 
 '''The dataframe is organized with all the powers in a single column to make the graphs in an easier way'''
+dataframe_long_components(d_B,'Power',columns=columns_powers_ic,name='Datos_componentes_formatolargo_filtrados',path=path)
 
-datai=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
-bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
-icc=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
-       'C14_rBeta1', 'C14_rBeta2', 'C14_rBeta3', 'C14_rGamma', 'C15_rDelta',
-       'C15_rTheta', 'C15_rAlpha-1', 'C15_rAlpha-2', 'C15_rBeta1',
-       'C15_rBeta2', 'C15_rBeta3', 'C15_rGamma', 'C18_rDelta', 'C18_rTheta',
-       'C18_rAlpha-1', 'C18_rAlpha-2', 'C18_rBeta1', 'C18_rBeta2',
-       'C18_rBeta3', 'C18_rGamma', 'C20_rDelta', 'C20_rTheta', 'C20_rAlpha-1',
-       'C20_rAlpha-2', 'C20_rBeta1', 'C20_rBeta2', 'C20_rBeta3', 'C20_rGamma',
-       'C22_rDelta', 'C22_rTheta', 'C22_rAlpha-1', 'C22_rAlpha-2',
-       'C22_rBeta1', 'C22_rBeta2', 'C22_rBeta3', 'C22_rGamma', 'C23_rDelta',
-       'C23_rTheta', 'C23_rAlpha-1', 'C23_rAlpha-2', 'C23_rBeta1',
-       'C23_rBeta2', 'C23_rBeta3', 'C23_rGamma', 'C24_rDelta', 'C24_rTheta',
-       'C24_rAlpha-1', 'C24_rAlpha-2', 'C24_rBeta1', 'C24_rBeta2',
-       'C24_rBeta3', 'C24_rGamma', 'C25_rDelta', 'C25_rTheta', 'C25_rAlpha-1',
-       'C25_rAlpha-2', 'C25_rBeta1', 'C25_rBeta2', 'C25_rBeta3','C25_rGamma']
-componentes=['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25']
-
-#New dataframe columns
-d_long=pd.DataFrame(columns=['participant_id', 'visit', 'group', 'condition', 'database', 'age','sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S', 'Power', 'Band', 'Component'])
-
-for i in icc:
-    '''The power column is taken with its respective demographic data and added to the new dataframe'''
-    datax=datai.copy()
-    datax.append(i)
-    d_sep=d_B.loc[:,datax] #data to be added
-    for j in bandas:
-        if j in i:
-            band=j
-    for c in componentes:
-        if c in i:
-            componente=c
-    d_sep['Band']=[band]*len(d_sep)
-    d_sep['Component']=[componente]*len(d_sep)
-    d_sep= d_sep.rename(columns={i:'Power'})
-    d_long=d_long.append(d_sep,ignore_index = True) 
-
-#Powers are saved in a feather file
-d_long.to_feather('{path}\Datosparaorganizardataframes\Datos_componentes_formatolargo_filtrados.feather'.format(path=path))
 print('Dataframe para hacer graficos de potencias por componentes guardado ')
 
