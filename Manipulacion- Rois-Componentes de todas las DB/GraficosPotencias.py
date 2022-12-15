@@ -23,7 +23,7 @@ def graphic_roi(data,path,name_band,id,num_columns=4,save=True,plot=True):
     if plot:
         plt.show()
     if save==True:
-        plt.savefig('{path}\Graficos_Potencia_Rois\{name_band}_Rois_{id}.png'.format(name_band=name_band,id=id,path=path))
+        plt.savefig('{path}\Graficos_Potencia\ROI\{name_band}_Rois_{id}.png'.format(name_band=name_band,id=id,path=path))
         plt.close()
     
     return 
@@ -47,7 +47,7 @@ def graphic_component(data,path,name_band,id,num_columns=4,save=True,plot=True):
     if plot:
         plt.show()
     if save==True:
-        plt.savefig('{path}\Graficos_Potencia_Componentes\{name_band}_Components_{id}.png'.format(name_band=name_band,id=id,path=path))
+        plt.savefig('{path}\Graficos_Potencia\IC\{name_band}_Components_{id}.png'.format(name_band=name_band,id=id,path=path))
         plt.close()
     
     return 
@@ -64,7 +64,7 @@ for band in bands:
     d_banda=data_Comp[data_Comp['Band']==band]
     d_banda1=data_Comp1[data_Comp1['Band']==band]
     graphic_component(d_banda,path,band,'con datos atipicos',num_columns=4,save=True,plot=False)
-    #graphic_component(d_banda1,path,band,'sin datos atipicos',num_columns=4,save=True,plot=False)
+    graphic_component(d_banda1,path,band,'sin datos atipicos',num_columns=4,save=True,plot=False)
 
 print('Graficos Componentes guardados')
 
@@ -79,7 +79,7 @@ for band in bands:
     d_banda=data_roi[data_roi['Band']==band]
     d_banda1=data_roi1[data_roi1['Band']==band]
     graphic_roi(d_banda,path,band,'condatosatipicos',num_columns=2,save=True,plot=False)
-    #graphic_roi(d_banda1,path,band,'sindatosatipicos',num_columns=2,save=True,plot=False)
+    graphic_roi(d_banda1,path,band,'sindatosatipicos',num_columns=2,save=True,plot=False)
 
 
 print('Graficos Rois guardados')

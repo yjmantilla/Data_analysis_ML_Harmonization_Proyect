@@ -9,13 +9,14 @@ import numpy as np
 def dataframe_long_roi(data,type,columns,name,path):
     '''Function used to convert a dataframe to be used for graphing by ROIs'''
     #demographic data and neuropsychological test columns
-    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total']
     columns_df=data_dem+[type, 'Band', 'ROI']
     data_new=pd.DataFrame(columns=columns_df)
     #Frequency bands
     bandas=['Delta','Theta','Alpha-1','Alpha-2','Beta1','Beta2','Beta3','Gamma']
     #ROIs 
-    roi=['ROI_F', 'ROI_C','ROI_PO', 'ROI_T']
+    roi=['F', 'C','PO', 'T_']
     for i in columns:
         '''The column of interest is taken with its respective demographic data and added to the new dataframe'''
         data_x=data_dem.copy()
@@ -32,14 +33,15 @@ def dataframe_long_roi(data,type,columns,name,path):
         d_sep= d_sep.rename(columns={i:type})
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new=data_new[data_new['database']=='DUQUE']
-    data_new['ROI']=data_new['ROI'].replace({'ROI_':''}, regex=True)#Quito el _ y lo reemplazo con '' 
+    data_new['ROI']=data_new['ROI'].replace({'T_':'T'}, regex=True)#Quito el _ y lo reemplazo con '' 
     data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
     print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_components(data,type,columns,name,path):
     '''Function used to convert a wide dataframe into a long one to be used for graphing by IC'''
     #demographic data and neuropsychological test columns
-    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total']#quitar luego esta linea
     columns_df=data_dem+[type, 'Band', 'Component']
     data_new=pd.DataFrame(columns=columns_df)
     #Frequency bands
@@ -64,18 +66,53 @@ def dataframe_long_components(data,type,columns,name,path):
     data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
     print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
+def dataframe_long_cross_roi(data,type,columns,name,path):
+    '''Function used to convert a dataframe to be used for graphing by ROIs'''
+    #demographic data and neuropsychological test columns
+    #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total']
+    columns_df=data_dem+[type, 'Band', 'ROI']
+    data_new=pd.DataFrame(columns=columns_df)
+    #Frequency bands 
+    bandas=['_Delta','_Theta','_Alpha-1','_Alpha-2','_Beta1','_Beta2','_Beta3','_Gamma']
+    m_bandas=['Mdelta','Mtheta','Malpha-1','Malpha-2','Mbeta1','Mbeta2','Mbeta3','Mgamma']
+    #ROIs 
+    roi=['F', 'C','PO', 'T_']
+    for i in columns:
+        '''The column of interest is taken with its respective demographic data and added to the new dataframe'''
+        data_x=data_dem.copy()
+        data_x.append(i)
+        d_sep=data.loc[:,data_x] 
+        for j in bandas:
+            if j in i:
+                band=j
+        for m in m_bandas:
+            if m in i:
+                bandm=m
+        for c in roi:
+            if c in i:
+                r=c
+        d_sep['Band']=[band]*len(d_sep)
+        d_sep['ROI']=[r]*len(d_sep)
+        d_sep['M_Band']=[bandm]*len(d_sep)
+        d_sep= d_sep.rename(columns={i:type})
+        data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
+    data_new['ROI']=data_new['ROI'].replace({'T_':'T'}, regex=True)#Quito el _ y lo reemplazo con '' 
+    data_new['Band']=data_new['Band'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con ''
+    data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
+    print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
-def dataframe_long_cross(data,type='Cross Frequency',columns=None,name=None,path=None):
+def dataframe_long_cross_ic(data,type='Cross Frequency',columns=None,name=None,path=None):
     '''Function used to convert a dataframe to be used for graphing.'''
     #demographic data and neuropsychological test columns
-    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    #data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total', 'FAS_F', 'FAS_A', 'FAS_S']
+    data_dem=['participant_id', 'visit', 'group', 'condition', 'database','age', 'sex', 'education', 'MM_total']
     columns_df=data_dem+[type, 'Band','M_Band', 'Component']
     data_new=pd.DataFrame(columns=columns_df)
     #Frequency bands
     bandas=['_Delta','_Theta','_Alpha-1','_Alpha-2','_Beta1','_Beta2','_Beta3','_Gamma']
-    m_bandas=['M_delta','M_theta','M_alpha-1','M_alpha-2','M_beta1','M_beta2','M_beta3','M_gamma']
+    m_bandas=['Mdelta','Mtheta','Malpha-1','Malpha-2','Mbeta1','Mbeta2','Mbeta3','Mgamma']
     componentes=['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25']
-
     for i in columns:
         '''The column of interest is taken with its respective demographic data and added to the new dataframe'''
         data_x=data_dem.copy()
@@ -96,9 +133,8 @@ def dataframe_long_cross(data,type='Cross Frequency',columns=None,name=None,path
         d_sep= d_sep.rename(columns={i:type})
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new['Band']=data_new['Band'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con ''
-    data_new=data_new[data_new['database']=='DUQUE']
     data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
-    print('Dataframe para graficos de {type} guardado'.format(type=type))
+    print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_componentes_deseadas(data,columnas):
     """Function that returns a dataframe with the desired columns, only having data with the independent components of interest
@@ -188,75 +224,78 @@ def estadisticos_demograficos(data,name,path):
     dfi.export(table, '{path}\Tablas_datos\Tabla_edad_escolaridad_sexo_separadoBD_{name}.png'.format(path=path,name=name))
 
 #Listas de columnas
-columns_powers_ic=['C14_rDelta', 'C14_rTheta', 'C14_rAlpha-1', 'C14_rAlpha-2',
-       'C14_rBeta1', 'C14_rBeta2', 'C14_rBeta3', 'C14_rGamma', 'C15_rDelta',
-       'C15_rTheta', 'C15_rAlpha-1', 'C15_rAlpha-2', 'C15_rBeta1',
-       'C15_rBeta2', 'C15_rBeta3', 'C15_rGamma', 'C18_rDelta', 'C18_rTheta',
-       'C18_rAlpha-1', 'C18_rAlpha-2', 'C18_rBeta1', 'C18_rBeta2',
-       'C18_rBeta3', 'C18_rGamma', 'C20_rDelta', 'C20_rTheta', 'C20_rAlpha-1',
-       'C20_rAlpha-2', 'C20_rBeta1', 'C20_rBeta2', 'C20_rBeta3', 'C20_rGamma',
-       'C22_rDelta', 'C22_rTheta', 'C22_rAlpha-1', 'C22_rAlpha-2',
-       'C22_rBeta1', 'C22_rBeta2', 'C22_rBeta3', 'C22_rGamma', 'C23_rDelta',
-       'C23_rTheta', 'C23_rAlpha-1', 'C23_rAlpha-2', 'C23_rBeta1',
-       'C23_rBeta2', 'C23_rBeta3', 'C23_rGamma', 'C24_rDelta', 'C24_rTheta',
-       'C24_rAlpha-1', 'C24_rAlpha-2', 'C24_rBeta1', 'C24_rBeta2',
-       'C24_rBeta3', 'C24_rGamma', 'C25_rDelta', 'C25_rTheta', 'C25_rAlpha-1',
-       'C25_rAlpha-2', 'C25_rBeta1', 'C25_rBeta2', 'C25_rBeta3','C25_rGamma']
+columns_powers_ic=['power_C14_Delta',
+       'power_C14_Theta', 'power_C14_Alpha-1', 'power_C14_Alpha-2',
+       'power_C14_Beta1', 'power_C14_Beta2', 'power_C14_Beta3',
+       'power_C14_Gamma', 'power_C15_Delta', 'power_C15_Theta',
+       'power_C15_Alpha-1', 'power_C15_Alpha-2', 'power_C15_Beta1',
+       'power_C15_Beta2', 'power_C15_Beta3', 'power_C15_Gamma',
+       'power_C18_Delta', 'power_C18_Theta', 'power_C18_Alpha-1',
+       'power_C18_Alpha-2', 'power_C18_Beta1', 'power_C18_Beta2',
+       'power_C18_Beta3', 'power_C18_Gamma', 'power_C20_Delta',
+       'power_C20_Theta', 'power_C20_Alpha-1', 'power_C20_Alpha-2',
+       'power_C20_Beta1', 'power_C20_Beta2', 'power_C20_Beta3',
+       'power_C20_Gamma', 'power_C22_Delta', 'power_C22_Theta',
+       'power_C22_Alpha-1', 'power_C22_Alpha-2', 'power_C22_Beta1',
+       'power_C22_Beta2', 'power_C22_Beta3', 'power_C22_Gamma',
+       'power_C23_Delta', 'power_C23_Theta', 'power_C23_Alpha-1',
+       'power_C23_Alpha-2', 'power_C23_Beta1', 'power_C23_Beta2',
+       'power_C23_Beta3', 'power_C23_Gamma', 'power_C24_Delta',
+       'power_C24_Theta', 'power_C24_Alpha-1', 'power_C24_Alpha-2',
+       'power_C24_Beta1', 'power_C24_Beta2', 'power_C24_Beta3',
+       'power_C24_Gamma', 'power_C25_Delta', 'power_C25_Theta',
+       'power_C25_Alpha-1', 'power_C25_Alpha-2', 'power_C25_Beta1',
+       'power_C25_Beta2', 'power_C25_Beta3', 'power_C25_Gamma']
 
-columns_powers_rois=['ROI_F_rDelta','ROI_C_rDelta', 'ROI_PO_rDelta', 'ROI_T_rDelta', 'ROI_F_rTheta',
-       'ROI_C_rTheta', 'ROI_PO_rTheta', 'ROI_T_rTheta', 'ROI_F_rAlpha-1',
-       'ROI_C_rAlpha-1', 'ROI_PO_rAlpha-1', 'ROI_T_rAlpha-1', 'ROI_F_rAlpha-2',
-       'ROI_C_rAlpha-2', 'ROI_PO_rAlpha-2', 'ROI_T_rAlpha-2', 'ROI_F_rBeta1',
-       'ROI_C_rBeta1', 'ROI_PO_rBeta1', 'ROI_T_rBeta1', 'ROI_F_rBeta2',
-       'ROI_C_rBeta2', 'ROI_PO_rBeta2', 'ROI_T_rBeta2', 'ROI_F_rBeta3',
-       'ROI_C_rBeta3', 'ROI_PO_rBeta3', 'ROI_T_rBeta3', 'ROI_F_rGamma',
-       'ROI_C_rGamma', 'ROI_PO_rGamma', 'ROI_T_rGamma']
+columns_powers_rois=['power_F_Delta','power_C_Delta', 'power_PO_Delta', 'power_T_Delta', 'power_F_Theta',
+       'power_C_Theta', 'power_PO_Theta', 'power_T_Theta', 'power_F_Alpha-1',
+       'power_C_Alpha-1', 'power_PO_Alpha-1', 'power_T_Alpha-1',
+       'power_F_Alpha-2', 'power_C_Alpha-2', 'power_PO_Alpha-2',
+       'power_T_Alpha-2', 'power_F_Beta1', 'power_C_Beta1', 'power_PO_Beta1',
+       'power_T_Beta1', 'power_F_Beta2', 'power_C_Beta2', 'power_PO_Beta2',
+       'power_T_Beta2', 'power_F_Beta3', 'power_C_Beta3', 'power_PO_Beta3',
+       'power_T_Beta3', 'power_F_Gamma', 'power_C_Gamma', 'power_PO_Gamma',
+       'power_T_Gamma']
 
 
 
 #Sl columns Roi
-columns_SL_roi=['SL_ROI_F_Delta', 'SL_ROI_C_Delta', 'SL_ROI_PO_Delta', 'SL_ROI_T_Delta',
-       'SL_ROI_F_Theta', 'SL_ROI_C_Theta', 'SL_ROI_PO_Theta', 'SL_ROI_T_Theta',
-       'SL_ROI_F_Alpha-1', 'SL_ROI_C_Alpha-1', 'SL_ROI_PO_Alpha-1',
-       'SL_ROI_T_Alpha-1', 'SL_ROI_F_Alpha-2', 'SL_ROI_C_Alpha-2',
-       'SL_ROI_PO_Alpha-2', 'SL_ROI_T_Alpha-2', 'SL_ROI_F_Beta1',
-       'SL_ROI_C_Beta1', 'SL_ROI_PO_Beta1', 'SL_ROI_T_Beta1', 'SL_ROI_F_Beta2',
-       'SL_ROI_C_Beta2', 'SL_ROI_PO_Beta2', 'SL_ROI_T_Beta2', 'SL_ROI_F_Beta3',
-       'SL_ROI_C_Beta3', 'SL_ROI_PO_Beta3', 'SL_ROI_T_Beta3', 'SL_ROI_F_Gamma',
-       'SL_ROI_C_Gamma', 'SL_ROI_PO_Gamma', 'SL_ROI_T_Gamma']
+columns_SL_roi=['sl_F_Delta', 'sl_C_Delta',
+       'sl_PO_Delta', 'sl_T_Delta', 'sl_F_Theta', 'sl_C_Theta', 'sl_PO_Theta',
+       'sl_T_Theta', 'sl_F_Alpha-1', 'sl_C_Alpha-1', 'sl_PO_Alpha-1',
+       'sl_T_Alpha-1', 'sl_F_Alpha-2', 'sl_C_Alpha-2', 'sl_PO_Alpha-2',
+       'sl_T_Alpha-2', 'sl_F_Beta1', 'sl_C_Beta1', 'sl_PO_Beta1', 'sl_T_Beta1',
+       'sl_F_Beta2', 'sl_C_Beta2', 'sl_PO_Beta2', 'sl_T_Beta2', 'sl_F_Beta3',
+       'sl_C_Beta3', 'sl_PO_Beta3', 'sl_T_Beta3', 'sl_F_Gamma', 'sl_C_Gamma',
+       'sl_PO_Gamma', 'sl_T_Gamma']
 
 #Coherence columns Roi
-columns_coherence_roi=['Coherence_Delta', 'Coherence_Theta', 'Coherence_Alpha-1',
-       'Coherence_Alpha-2', 'Coherence_Beta1', 'Coherence_Beta2',
-       'Coherence_Beta3', 'Coherence_Gamma']
+columns_coherence_roi=['cohfreq_F_Delta',
+       'cohfreq_C_Delta', 'cohfreq_PO_Delta', 'cohfreq_T_Delta',
+       'cohfreq_F_Theta', 'cohfreq_C_Theta', 'cohfreq_PO_Theta',
+       'cohfreq_T_Theta', 'cohfreq_F_Alpha-1', 'cohfreq_C_Alpha-1',
+       'cohfreq_PO_Alpha-1', 'cohfreq_T_Alpha-1', 'cohfreq_F_Alpha-2',
+       'cohfreq_C_Alpha-2', 'cohfreq_PO_Alpha-2', 'cohfreq_T_Alpha-2',
+       'cohfreq_F_Beta1', 'cohfreq_C_Beta1', 'cohfreq_PO_Beta1',
+       'cohfreq_T_Beta1', 'cohfreq_F_Beta2', 'cohfreq_C_Beta2',
+       'cohfreq_PO_Beta2', 'cohfreq_T_Beta2', 'cohfreq_F_Beta3',
+       'cohfreq_C_Beta3', 'cohfreq_PO_Beta3', 'cohfreq_T_Beta3',
+       'cohfreq_F_Gamma', 'cohfreq_C_Gamma', 'cohfreq_PO_Gamma',
+       'cohfreq_T_Gamma']
 
 #Entropy columns Roi  
-columns_entropy_rois=['Entropy_ROI_F_Delta',
-       'Entropy_ROI_C_Delta', 'Entropy_ROI_PO_Delta', 'Entropy_ROI_T_Delta',
-       'Entropy_ROI_F_Theta', 'Entropy_ROI_C_Theta', 'Entropy_ROI_PO_Theta',
-       'Entropy_ROI_T_Theta', 'Entropy_ROI_F_Alpha-1', 'Entropy_ROI_C_Alpha-1',
-       'Entropy_ROI_PO_Alpha-1', 'Entropy_ROI_T_Alpha-1',
-       'Entropy_ROI_F_Alpha-2', 'Entropy_ROI_C_Alpha-2',
-       'Entropy_ROI_PO_Alpha-2', 'Entropy_ROI_T_Alpha-2',
-       'Entropy_ROI_F_Beta1', 'Entropy_ROI_C_Beta1', 'Entropy_ROI_PO_Beta1',
-       'Entropy_ROI_T_Beta1', 'Entropy_ROI_F_Beta2', 'Entropy_ROI_C_Beta2',
-       'Entropy_ROI_PO_Beta2', 'Entropy_ROI_T_Beta2', 'Entropy_ROI_F_Beta3',
-       'Entropy_ROI_C_Beta3', 'Entropy_ROI_PO_Beta3', 'Entropy_ROI_T_Beta3',
-       'Entropy_ROI_F_Gamma', 'Entropy_ROI_C_Gamma', 'Entropy_ROI_PO_Gamma',
-       'Entropy_ROI_T_Gamma']
-
-#Cross frequency columns Roi
-columns_cross_rois=['Cross_ROI_F_Delta','Cross_ROI_C_Delta', 'Cross_ROI_PO_Delta', 'Cross_ROI_T_Delta',
-       'Cross_ROI_F_Theta', 'Cross_ROI_C_Theta', 'Cross_ROI_PO_Theta',
-       'Cross_ROI_T_Theta', 'Cross_ROI_F_Alpha-1', 'Cross_ROI_C_Alpha-1',
-       'Cross_ROI_PO_Alpha-1', 'Cross_ROI_T_Alpha-1', 'Cross_ROI_F_Alpha-2',
-       'Cross_ROI_C_Alpha-2', 'Cross_ROI_PO_Alpha-2', 'Cross_ROI_T_Alpha-2',
-       'Cross_ROI_F_Beta1', 'Cross_ROI_C_Beta1', 'Cross_ROI_PO_Beta1',
-       'Cross_ROI_T_Beta1', 'Cross_ROI_F_Beta2', 'Cross_ROI_C_Beta2',
-       'Cross_ROI_PO_Beta2', 'Cross_ROI_T_Beta2', 'Cross_ROI_F_Beta3',
-       'Cross_ROI_C_Beta3', 'Cross_ROI_PO_Beta3', 'Cross_ROI_T_Beta3',
-       'Cross_ROI_F_Gamma', 'Cross_ROI_C_Gamma', 'Cross_ROI_PO_Gamma',
-       'Cross_ROI_T_Gamma']
+columns_entropy_rois=['entropy_F_Delta',
+       'entropy_C_Delta', 'entropy_PO_Delta', 'entropy_T_Delta',
+       'entropy_F_Theta', 'entropy_C_Theta', 'entropy_PO_Theta',
+       'entropy_T_Theta', 'entropy_F_Alpha-1', 'entropy_C_Alpha-1',
+       'entropy_PO_Alpha-1', 'entropy_T_Alpha-1', 'entropy_F_Alpha-2',
+       'entropy_C_Alpha-2', 'entropy_PO_Alpha-2', 'entropy_T_Alpha-2',
+       'entropy_F_Beta1', 'entropy_C_Beta1', 'entropy_PO_Beta1',
+       'entropy_T_Beta1', 'entropy_F_Beta2', 'entropy_C_Beta2',
+       'entropy_PO_Beta2', 'entropy_T_Beta2', 'entropy_F_Beta3',
+       'entropy_C_Beta3', 'entropy_PO_Beta3', 'entropy_T_Beta3',
+       'entropy_F_Gamma', 'entropy_C_Gamma', 'entropy_PO_Gamma',
+       'entropy_T_Gamma']
 
 columns_SL_ic=['sl_C14_Delta', 'sl_C14_Theta', 'sl_C14_Alpha-1',
        'sl_C14_Alpha-2', 'sl_C14_Beta1', 'sl_C14_Beta2', 'sl_C14_Beta3',
@@ -272,7 +311,9 @@ columns_SL_ic=['sl_C14_Delta', 'sl_C14_Theta', 'sl_C14_Alpha-1',
        'sl_C23_Alpha-2', 'sl_C23_Beta1', 'sl_C23_Beta2', 'sl_C23_Beta3',
        'sl_C23_Gamma', 'sl_C24_Delta', 'sl_C24_Theta', 'sl_C24_Alpha-1',
        'sl_C24_Alpha-2', 'sl_C24_Beta1', 'sl_C24_Beta2', 'sl_C24_Beta3',
-       'sl_C24_Gamma']
+       'sl_C24_Gamma','sl_C25_Delta', 'sl_C25_Theta', 'sl_C25_Alpha-1',
+       'sl_C25_Alpha-2', 'sl_C25_Beta1', 'sl_C25_Beta2', 'sl_C25_Beta3',
+       'sl_C25_Gamma']
 columns_coherence_ic=['cohfreq_C14_Delta', 'cohfreq_C14_Theta',
        'cohfreq_C14_Alpha-1', 'cohfreq_C14_Alpha-2', 'cohfreq_C14_Beta1',
        'cohfreq_C14_Beta2', 'cohfreq_C14_Beta3', 'cohfreq_C14_Gamma',
@@ -291,7 +332,10 @@ columns_coherence_ic=['cohfreq_C14_Delta', 'cohfreq_C14_Theta',
        'cohfreq_C23_Beta1', 'cohfreq_C23_Beta2', 'cohfreq_C23_Beta3',
        'cohfreq_C23_Gamma', 'cohfreq_C24_Delta', 'cohfreq_C24_Theta',
        'cohfreq_C24_Alpha-1', 'cohfreq_C24_Alpha-2', 'cohfreq_C24_Beta1',
-       'cohfreq_C24_Beta2', 'cohfreq_C24_Beta3', 'cohfreq_C24_Gamma']
+       'cohfreq_C24_Beta2', 'cohfreq_C24_Beta3', 'cohfreq_C24_Gamma',
+       'cohfreq_C25_Delta', 'cohfreq_C25_Theta',
+       'cohfreq_C25_Alpha-1', 'cohfreq_C25_Alpha-2', 'cohfreq_C25_Beta1',
+       'cohfreq_C25_Beta2', 'cohfreq_C25_Beta3', 'cohfreq_C25_Gamma']
 columns_entropy_ic=['entropy_C14_Delta', 'entropy_C14_Theta',
        'entropy_C14_Alpha-1', 'entropy_C14_Alpha-2', 'entropy_C14_Beta1',
        'entropy_C14_Beta2', 'entropy_C14_Beta3', 'entropy_C14_Gamma',
@@ -310,5 +354,8 @@ columns_entropy_ic=['entropy_C14_Delta', 'entropy_C14_Theta',
        'entropy_C23_Beta1', 'entropy_C23_Beta2', 'entropy_C23_Beta3',
        'entropy_C23_Gamma', 'entropy_C24_Delta', 'entropy_C24_Theta',
        'entropy_C24_Alpha-1', 'entropy_C24_Alpha-2', 'entropy_C24_Beta1',
-       'entropy_C24_Beta2', 'entropy_C24_Beta3', 'entropy_C24_Gamma']
-columns_cross_ic=[]
+       'entropy_C24_Beta2', 'entropy_C24_Beta3', 'entropy_C24_Gamma',
+       'entropy_C25_Delta', 'entropy_C25_Theta',
+       'entropy_C25_Alpha-1', 'entropy_C25_Alpha-2', 'entropy_C25_Beta1',
+       'entropy_C25_Beta2', 'entropy_C25_Beta3', 'entropy_C25_Gamma']
+
