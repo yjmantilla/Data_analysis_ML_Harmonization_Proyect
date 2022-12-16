@@ -374,3 +374,5 @@ columns_entropy_ic=['entropy_C14_Delta', 'entropy_C14_Theta',
        'entropy_C25_Alpha-1', 'entropy_C25_Alpha-2', 'entropy_C25_Beta1',
        'entropy_C25_Beta2', 'entropy_C25_Beta3', 'entropy_C25_Gamma']
 
+
+'''manejo de pandas: https://joserzapata.github.io/courses/python-ciencia-datos/pandas/'''
