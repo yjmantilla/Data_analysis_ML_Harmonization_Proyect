@@ -49,62 +49,33 @@ def graphics(data,type,path,name_band,id,id_cross=None,num_columns=4,save=True,p
         plt.show()
     if save==True:
         if id_cross==None:
-            plt.savefig('{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type))
-            plt.close()
+            path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type)  
         else:
-            plt.savefig('{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type,id_cross=id_cross))
-            plt.close()
-    print('Done!')
-    return
-
-def fig2img(fig):
-      """
-  Convert a Matplotlib figure to a PIL Image and return it
-  """
-  buf = io.BytesIO()
-  fig.savefig(buf)
-  buf.seek(0)
-  img = Image.open(buf)
-  return img
-
-def createCollage(imageList, frame_width, images_per_row,save_path,name_graphic,carpeta,tipo,grupo,show=False):
-    try:
-        path="{save_path}\{carpeta}\{tipo}".format(save_path=save_path,carpeta=carpeta,tipo=tipo).replace('\\','/')
-        os.makedirs(path)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
-    imageList=[fig2img(x) for x in imageList] 
-    img_width, img_height = getSize(imageList)
-    #scaling factor
-    sf = (frame_width-(images_per_row-1))/(images_per_row*img_width)
-
-    scaled_img_width =int(ceil(img_width*sf))
-    scaled_img_height =int(ceil(img_height*sf))
-
-    number_of_rows = int(ceil(len(imageList)/images_per_row))
-    frame_height = int(ceil(sf*img_height*number_of_rows))
-
-    new_im = Image.new('RGB', (frame_width, frame_height),'white')
-
-    i,j=0,0
-    for num, im in enumerate(imageList):
-        if num%images_per_row==0:
-            i=0
+            path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}.png'.format(path=path,name_band=name_band,id=id,type=type,id_cross=id_cross)
+        plt.savefig(path_complete)
+    plt.close()
+    return path_complete
+    
+def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
+    import dataframe_image as dfi
+    groups=data['group'].unique()
+    combinaciones = list(combinations(groups, 2))
+    pruebas={}
+    for i in combinaciones:
+        a=data.groupby(['database',space]).apply(lambda data:pg.compute_effsize(data[data['group']==i[0]][metric],data[data['group']==i[1]][metric])).to_frame()
+        a=a.rename(columns={0:'valores'})
+        a['groups']=[i[0]+'-'+i[1]]*len(a)
+        a['prueba']=['effsize']*len(a)
+        pruebas['effsize-'+i[0]+'-'+i[1]]=a
+        #pg.pairwise_gameshowell(data_sl_com,dv)
+    table=pd.concat(list(pruebas.values()),axis=0)
+    if id_cross==None:
+        path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric)  
+    else:
+        path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric,id_cross=id_cross)
+    dfi.export(table, path_complete)
+    return path_complete
         
-        #resizing opened image
-        im.thumbnail((scaled_img_width,scaled_img_height))
-        #Iterate through a 3 x 3 grid
-        y_cord = (j//images_per_row)*scaled_img_height
-        y_cord=int(y_cord)
-        new_im.paste(im, (i,y_cord))
-        # print(i, y_cord)
-        i=(i+scaled_img_width)
-        j+=1
-    if show:
-        new_im.show()
-    new_im.save('{save_path}\{carpeta}\{tipo}\{name_graphic}_{tipo}_{grupo}.png'.format(save_path=save_path,name_graphic=name_graphic,carpeta=carpeta,tipo=tipo,grupo=grupo), "PNG")
-    return new_im
 
 
 path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
