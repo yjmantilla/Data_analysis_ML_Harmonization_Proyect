@@ -204,6 +204,21 @@ def removing_outliers(data,columns):
         print('Porcentaje que se elimino %',100-data_copy[data_copy['database']==db].shape[0]*100/data[data['database']==db].shape[0])
     return data_copy
 
+#Amount of empty data from demographic data after merging with powers
+def ver_datos_vacios(d_B):
+    df=pd.DataFrame()
+    databases=d_B['database'].unique()
+    for i in databases:
+        #dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total', 'FAS_F','FAS_S','FAS_A']].isnull().sum()
+        dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total']].isnull().sum()
+        df[i]=dx
+        print('\n', i)
+        print('Numero de sujetos:',len(d_B[d_B['database']==i]['participant_id'].unique()))
+        print('Numero de datos:',len(d_B[d_B['database']==i]))
+    print('\nCantidad de datos vacios')
+    print(df)
+    return None
+
 def estadisticos_demograficos(data,name,path):
     """
     Function that exports tables of general description of age, gender and sex of the data.

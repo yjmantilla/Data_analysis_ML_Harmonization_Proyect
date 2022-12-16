@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from IPython.display import HTML, display_html, display
 import collections
-from Funciones import dataframe_long_roi
+from Funciones import dataframe_long_roi,ver_datos_vacios
 from Funciones import columns_powers_rois
 
 "Power data loading by ROIs"
@@ -157,20 +157,7 @@ df_dem['DUQUE']=N_DUQUE.isnull().sum()
 # print('Total de datos demograficos SRM ',len(N_SRM))
 print('Total de datos demograficos DUQUE ',len(N_DUQUE))
 
-#Amount of empty data from demographic data after merging with powers
-def ver_datos_vacios(d_B):
-    df=pd.DataFrame()
-    databases=d_B['database'].unique()
-    for i in databases:
-        #dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total', 'FAS_F','FAS_S','FAS_A']].isnull().sum()
-        dx=d_B[d_B['database']==i][['age', 'sex', 'education', 'MM_total']].isnull().sum()
-        df[i]=dx
-        print('\n', i)
-        print('Numero de sujetos:',len(d_B[d_B['database']==i]['participant_id'].unique()))
-        print('Numero de datos:',len(d_B[d_B['database']==i]))
-    print('\nCantidad de datos vacios')
-    print(df)
-    return None
+
 
 print('\nCantidad de datos vacios antes de unir el dataframe con los datos demograficos')
 print(df_dem)

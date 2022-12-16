@@ -13,6 +13,7 @@ import collections
 from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_componentes_deseadas,dataframe_long_cross_ic,dataframe_long_cross_roi
 from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois
 from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic
+from Funciones import ver_datos_vacios
 
 path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
 
@@ -132,7 +133,7 @@ first merged for each database and then all the databases are concatenated'''
 # d_BIO=pd.merge(mergeBIO,BIO_sl)
 # d_BIO=pd.merge(d_BIO,BIO_c)
 #DUQUE
-mergeDUQUE=data_roi[data_roi['database']=='DUQUE']
+mergeDUQUE=data_Comp[data_Comp['database']=='DUQUE']
 mergeDUQUE.reset_index(inplace=True, drop=True)
 
 d_DUQUE=pd.merge(mergeDUQUE,DUQUE_sl)
@@ -165,6 +166,4 @@ dataframe_long_components(d_B_com,type='Coherence',columns=columns_coherence_ic,
 dataframe_long_components(d_B_com,type='Entropy',columns=columns_entropy_ic,name="data_long_entropy_components",path=path)
 #Cross frequency
 dataframe_long_cross_ic(d_B_com,type='Cross Frequency',columns=columns_cross_ic,name="data_long_crossfreq_components",path=path)
-
-
 

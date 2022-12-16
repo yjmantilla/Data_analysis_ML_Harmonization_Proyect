@@ -38,8 +38,8 @@ print('\nFinalización de eliminación de datos atipicos de ROIs')
 
 
 #Dataframes are saved by ROI and components for graphics.
-dataframe_long_roi(data_roi_copy,'Power',columns=columns_powers_rois,name='Datos_ROI_formatolargo_filtrados_sin_atipicos',path=path)
-dataframe_long_components(data_Comp_copy,'Power',columns=columns_powers_ic,name='Datos_componentes_formatolargo_filtrados_sin_atipicos',path=path)
+dataframe_long_roi(data_roi_copy,'Power',columns=columns_powers_rois,name="data_long_power_roi_without_oitliers",path=path)
+dataframe_long_components(data_Comp_copy,'Power',columns=columns_powers_ic,name="data_long_power_components_without_oitliers",path=path)
 
 #Distribucion de edad, escolaridad y educación
 estadisticos_demograficos(data_Comp_copy,'componentes',path)
