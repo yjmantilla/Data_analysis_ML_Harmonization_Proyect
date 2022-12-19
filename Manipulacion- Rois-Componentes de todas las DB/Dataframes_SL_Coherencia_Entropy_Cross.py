@@ -83,6 +83,8 @@ d_DUQUE=pd.merge(d_DUQUE,DUQUE_cr)
 "Data concatenation: The dataframe contains power columns for ROIs, SL, coherence, entropy, cross frequency, etc"
 #d_B_roi=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
 d_B_roi=d_DUQUE
+d_B_roi.to_feather('{path}\Datosparaorganizardataframes\Data_complete_roi.feather'.format(path=path))
+#d_B_roi.reset_index().to_feather('{path}\Datosparaorganizardataframes\Data_complete_roi.feather'.format(path=path))
 "Load data"
 #Independent component data with demographic data
 
@@ -143,7 +145,11 @@ d_DUQUE=pd.merge(d_DUQUE,DUQUE_cr)
 
 "Data concatenation: The dataframe contains power columns for independent components, SL, coherence, entropy, cross frequency, etc"
 d_B_com=d_DUQUE
+
 #d_B_com=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])#Union de todos los dataframes
+
+d_B_com.to_feather('{path}\Datosparaorganizardataframes\Data_complete_ic.feather'.format(path=path))
+#d_B_com.reset_index().to_feather('{path}\Datosparaorganizardataframes\Data_complete_ic.feather'.format(path=path))
 
 """Conversion of dataframes to perform the different SL, coherence, entropy, cross frequency, etc. graphs"""
 
