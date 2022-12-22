@@ -31,19 +31,21 @@ data_roi.reset_index(inplace=True, drop=True)
 # SL Dataframes
 # SRM_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_sl_column_ROI_norm_SRM.feather'.format(path=path))
 # CHBMP_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_sl_column_ROI_norm_CHBMP.feather'.format(path=path))
-# BIO_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_sl_column_ROI_norm_BIOMARCADORES.feather'.format(path=path))
+BIO_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_sl_columns_ROI_BIOMARCADORES.feather'.format(path=path))
 DUQUE_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_sl_columns_ROI_DUQUE.feather'.format(path=path))
 
 #Coherence Dataframes
 # SRM_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Coherence_column_norm_SRM.feather'.format(path=path))
 # CHBMP_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Coherence_column_norm_CHBMP.feather'.format(path=path))
-# BIO_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Coherence_column_norm_BIOMARCADORES.feather'.format(path=path))
+BIO_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_cohfreq_columns_ROI_BIOMARCADORES.feather'.format(path=path))
 DUQUE_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_cohfreq_columns_ROI_DUQUE.feather'.format(path=path))
 
 #Entropy Dataframes
+BIO_e=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_entropy_columns_ROI_BIOMARCADORES.feather'.format(path=path))
 DUQUE_e=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_entropy_columns_ROI_DUQUE.feather'.format(path=path))
 
 #Cross frequency Dataframes
+BIO_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_crossfreq_columns_ROI_BIOMARCADORES.feather'.format(path=path))
 DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_ROI_DUQUE.feather'.format(path=path))
 columns_cross_roi=DUQUE_cr.columns.tolist()
 
@@ -62,11 +64,13 @@ first merged for each database and then all the databases are concatenated'''
 # mergeCHBMP=mergeCHBMP.drop(['visit'], axis=1)
 # d_CHBMP=pd.merge(mergeCHBMP,CHBMP_sl)
 # d_CHBMP=pd.merge(d_CHBMP,CHBMP_c)
-# #BIOMARCADORES
-# mergeBIO=data_roi[data_roi['database']=='BIOMARCADORES']
-# mergeBIO.reset_index(inplace=True, drop=True)
-# d_BIO=pd.merge(mergeBIO,BIO_sl)
-# d_BIO=pd.merge(d_BIO,BIO_c)
+#BIOMARCADORES
+mergeBIO=data_roi[data_roi['database']=='BIOMARCADORES']
+mergeBIO.reset_index(inplace=True, drop=True)
+d_BIO=pd.merge(mergeBIO,BIO_sl)
+d_BIO=pd.merge(d_BIO,BIO_c)
+d_BIO=pd.merge(d_BIO,BIO_e)
+d_BIO=pd.merge(d_BIO,BIO_cr)
 #DUQUE
 mergeDUQUE=data_roi[data_roi['database']=='DUQUE']
 mergeDUQUE.reset_index(inplace=True, drop=True)
@@ -82,9 +86,11 @@ d_DUQUE=pd.merge(d_DUQUE,DUQUE_cr)
 
 "Data concatenation: The dataframe contains power columns for ROIs, SL, coherence, entropy, cross frequency, etc"
 #d_B_roi=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
-d_B_roi=d_DUQUE
+d_B_roi=pd.concat([d_BIO,d_DUQUE])
+ver_datos_vacios(d_B_roi)
+d_B_roi['group'].replace({'CTR':'Control','G4':'Control','G3':'DTA'}, inplace=True)
+d_B_roi.reset_index(inplace=True)
 d_B_roi.to_feather('{path}\Datosparaorganizardataframes\Data_complete_roi.feather'.format(path=path))
-#d_B_roi.reset_index().to_feather('{path}\Datosparaorganizardataframes\Data_complete_roi.feather'.format(path=path))
 "Load data"
 #Independent component data with demographic data
 
@@ -98,20 +104,28 @@ data_Comp.reset_index(inplace=True, drop=True)
 # SL Dataframes
 # SRM_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_sl_column_ROI_norm_SRM.feather'.format(path=path))
 # CHBMP_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_sl_column_ROI_norm_CHBMP.feather'.format(path=path))
-# BIO_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_sl_column_ROI_norm_BIOMARCADORES.feather'.format(path=path))
+BIO_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_sl_columns_components_BIOMARCADORES.feather'.format(path=path))
+BIO_sl=dataframe_componentes_deseadas(BIO_sl,columnas=['participant_id','visit','group'])
 DUQUE_sl=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_sl_columns_components_DUQUE.feather'.format(path=path))
 DUQUE_sl=dataframe_componentes_deseadas(DUQUE_sl,columnas=['participant_id'])
 
 #Coherence Dataframes
 # SRM_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Coherence_column_norm_SRM.feather'.format(path=path))
 # CHBMP_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Coherence_column_norm_CHBMP.feather'.format(path=path))
-# BIO_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_Coherence_column_norm_BIOMARCADORES.feather'.format(path=path))
+BIO_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_cohfreq_columns_components_BIOMARCADORES.feather'.format(path=path))
+BIO_c=dataframe_componentes_deseadas(BIO_c,columnas=['participant_id','visit','group'])
 DUQUE_c=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_cohfreq_columns_components_DUQUE.feather'.format(path=path))
 DUQUE_c=dataframe_componentes_deseadas(DUQUE_c,columnas=['participant_id'])
+
 #Entropy Dataframes
+BIO_e=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_entropy_columns_components_BIOMARCADORES.feather'.format(path=path))
+BIO_e=dataframe_componentes_deseadas(BIO_e,columnas=['participant_id','visit','group'])
 DUQUE_e=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_entropy_columns_components_DUQUE.feather'.format(path=path))
 DUQUE_e=dataframe_componentes_deseadas(DUQUE_e,columnas=['participant_id'])
+
 #Cross frequency Dataframes
+BIO_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_crossfreq_columns_components_BIOMARCADORES.feather'.format(path=path))
+BIO_cr=dataframe_componentes_deseadas(BIO_cr,columnas=['participant_id','visit','group'])
 DUQUE_cr=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_crossfreq_columns_components_DUQUE.feather'.format(path=path))
 DUQUE_cr=dataframe_componentes_deseadas(DUQUE_cr,columnas=['participant_id'])
 
@@ -130,10 +144,12 @@ first merged for each database and then all the databases are concatenated'''
 # d_CHBMP=pd.merge(mergeCHBMP,CHBMP_sl)
 # d_CHBMP=pd.merge(d_CHBMP,CHBMP_c)
 # #BIOMARCADORES
-# mergeBIO=data_Comp[data_Comp['database']=='BIOMARCADORES']
-# mergeBIO.reset_index(inplace=True, drop=True)
-# d_BIO=pd.merge(mergeBIO,BIO_sl)
-# d_BIO=pd.merge(d_BIO,BIO_c)
+mergeBIO=data_Comp[data_Comp['database']=='BIOMARCADORES']
+mergeBIO.reset_index(inplace=True, drop=True)
+d_BIO=pd.merge(mergeBIO,BIO_sl)
+d_BIO=pd.merge(d_BIO,BIO_c)
+d_BIO=pd.merge(d_BIO,BIO_e)
+d_BIO=pd.merge(d_BIO,BIO_cr)
 #DUQUE
 mergeDUQUE=data_Comp[data_Comp['database']=='DUQUE']
 mergeDUQUE.reset_index(inplace=True, drop=True)
@@ -144,13 +160,16 @@ d_DUQUE=pd.merge(d_DUQUE,DUQUE_e)
 d_DUQUE=pd.merge(d_DUQUE,DUQUE_cr)
 
 "Data concatenation: The dataframe contains power columns for independent components, SL, coherence, entropy, cross frequency, etc"
-d_B_com=d_DUQUE
+
 
 #d_B_com=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])#Union de todos los dataframes
+d_B_com=pd.concat([d_BIO,d_DUQUE])#Union de todos los dataframes
 
+d_B_com.reset_index(inplace=True)
 d_B_com.to_feather('{path}\Datosparaorganizardataframes\Data_complete_ic.feather'.format(path=path))
-#d_B_com.reset_index().to_feather('{path}\Datosparaorganizardataframes\Data_complete_ic.feather'.format(path=path))
 
+
+ver_datos_vacios(d_B_com)
 """Conversion of dataframes to perform the different SL, coherence, entropy, cross frequency, etc. graphs"""
 
 #New dataframes from ROIs

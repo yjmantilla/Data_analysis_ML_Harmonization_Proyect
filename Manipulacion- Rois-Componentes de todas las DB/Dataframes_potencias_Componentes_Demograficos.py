@@ -19,11 +19,11 @@ from Funciones import  dataframe_long_components,dataframe_componentes_deseadas
 path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' 
 # SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_powers_components_norm_SRM.feather'.format(path=path))
 # CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_powers_components_norm_CHBMP.feather'.format(path=path))
-# BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_powers_components_norm_BIOMARCADORES.feather'.format(path=path))
+BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_power_columns_components_BIOMARCADORES.feather'.format(path=path))
 DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_power_columns_components_DUQUE.feather'.format(path=path))
 
 #datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #Data concatenation
-datos=DUQUE
+datos=pd.concat([BIO,DUQUE]) #Data concatenation
 "Only the desired columns are taken from the dataframe"
 datos1=dataframe_componentes_deseadas(datos,columnas=['participant_id', 'visit', 'group','condition','database'])
 
@@ -34,65 +34,65 @@ datosICC=datos1 #Dataframe to work with
 the necessary modifications are made to standardize the data in them'''
 
 #BIOMARCADORES
-# N_BIO=pd.read_excel('{path}\Datosparaorganizardataframes\Demograficosbiomarcadores.xlsx'.format(path=path))
-# N_BIO = N_BIO.rename(columns={'Codigo':'participant_id','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','MMSE':'MM_total','F':'FAS_F','S':'FAS_S','A':'FAS_A','Visita':'visit'})
-# N_BIO['participant_id']=N_BIO['participant_id'].replace({'_':''}, regex=True)# remove "_" and replace by "" in "participant_id"
-# N_BIO['participant_id']='sub-'+N_BIO['participant_id']
-# subjects_bio=N_BIO['participant_id'].unique()
+N_BIO=pd.read_excel('{path}\Datosparaorganizardataframes\Demograficosbiomarcadores.xlsx'.format(path=path))
+N_BIO = N_BIO.rename(columns={'Codigo':'participant_id','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','MMSE':'MM_total','F':'FAS_F','S':'FAS_S','A':'FAS_A','Visita':'visit'})
+N_BIO['participant_id']=N_BIO['participant_id'].replace({'_':''}, regex=True)# remove "_" and replace by "" in "participant_id"
+N_BIO['participant_id']='sub-'+N_BIO['participant_id']
+subjects_bio=N_BIO['participant_id'].unique()
 
-# for i in subjects_bio:
-#     num_vis=len(N_BIO[N_BIO['participant_id']==i].loc[:,'visit'])
+for i in subjects_bio:
+    num_vis=len(N_BIO[N_BIO['participant_id']==i].loc[:,'visit'])
 
-#     '''Since we do not have demographic and/or neuropsychological test data for all visits, 
-#     the values from the previous visit are assigned to the empty visits'''
+    '''Since we do not have demographic and/or neuropsychological test data for all visits, 
+    the values from the previous visit are assigned to the empty visits'''
 
-#     if num_vis==5:
-#         'Example to see how the data is before modifying'
-#         # print('Antes')
-#         # print(N_BIO[N_BIO['participant_id']==i])
-#         V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
-#         V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
-#         V2=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V2'
-#         V3=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V3'
-#         V4=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V4'
-#         index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
-#         index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
-#         index2=N_BIO[N_BIO['participant_id']==i].loc[V2].index.tolist()[0]
-#         index3=N_BIO[N_BIO['participant_id']==i].loc[V3].index.tolist()[0]
-#         index4=N_BIO[N_BIO['participant_id']==i].loc[V4].index.tolist()[0]
-#         #MM_total and FAS are modified
-#         if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
-#             N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
-#         if N_BIO[N_BIO['participant_id']==i].loc[V3]['FAS_F'].isna().tolist()[0]:
-#             N_BIO.loc[index3,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]
-#         if N_BIO[N_BIO['participant_id']==i].loc[V4]['FAS_F'].isna().tolist()[0]:
-#             N_BIO.loc[index4,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]
-#         'Example to see how the data is after modifying'
-#         # print('Despues')
-#         # print(N_BIO[N_BIO['participant_id']==i])
+    if num_vis==5:
+        'Example to see how the data is before modifying'
+        # print('Antes')
+        # print(N_BIO[N_BIO['participant_id']==i])
+        V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
+        V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
+        V2=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V2'
+        V3=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V3'
+        V4=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V4'
+        index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
+        index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
+        index2=N_BIO[N_BIO['participant_id']==i].loc[V2].index.tolist()[0]
+        index3=N_BIO[N_BIO['participant_id']==i].loc[V3].index.tolist()[0]
+        index4=N_BIO[N_BIO['participant_id']==i].loc[V4].index.tolist()[0]
+        #MM_total and FAS are modified
+        if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
+        if N_BIO[N_BIO['participant_id']==i].loc[V3]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index3,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]
+        if N_BIO[N_BIO['participant_id']==i].loc[V4]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index4,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]
+        'Example to see how the data is after modifying'
+        # print('Despues')
+        # print(N_BIO[N_BIO['participant_id']==i])
      
-#     if num_vis==4:
-#         V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
-#         V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
-#         V2=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V2'
-#         V3=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V3'
-#         index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
-#         index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
-#         index2=N_BIO[N_BIO['participant_id']==i].loc[V2].index.tolist()[0]
-#         index3=N_BIO[N_BIO['participant_id']==i].loc[V3].index.tolist()[0]
-#         #MM_total and FAS are modified
-#         if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
-#             N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
-#         if N_BIO[N_BIO['participant_id']==i].loc[V3]['FAS_F'].isna().tolist()[0]:
-#             N_BIO.loc[index3,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]    
+    if num_vis==4:
+        V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
+        V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
+        V2=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V2'
+        V3=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V3'
+        index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
+        index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
+        index2=N_BIO[N_BIO['participant_id']==i].loc[V2].index.tolist()[0]
+        index3=N_BIO[N_BIO['participant_id']==i].loc[V3].index.tolist()[0]
+        #MM_total and FAS are modified
+        if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
+        if N_BIO[N_BIO['participant_id']==i].loc[V3]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index3,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index2,['MM_total','FAS_F','FAS_A','FAS_S']]    
   
-#     if num_vis==2:
-#         V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
-#         V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
-#         index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
-#         index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
-#         if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
-#             N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
+    if num_vis==2:
+        V0=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V0'
+        V1=N_BIO[N_BIO['participant_id']==i].loc[:,'visit']=='V1'
+        index0=N_BIO[N_BIO['participant_id']==i].loc[V0].index.tolist()[0]
+        index1=N_BIO[N_BIO['participant_id']==i].loc[V1].index.tolist()[0]
+        if N_BIO[N_BIO['participant_id']==i].loc[V1]['FAS_F'].isna().tolist()[0]:
+            N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
 
 
 # #CHBMP
@@ -117,7 +117,7 @@ N_DUQUE['participant_id']=N_DUQUE['participant_id'].replace({'_':''}, regex=True
 N_DUQUE['participant_id']='sub-'+N_DUQUE['participant_id']
 
 #None is replaced by NaN
-# N_BIO.replace({'None':np.NaN},inplace=True)
+N_BIO.replace({'None':np.NaN},inplace=True)
 # N_CHBMP.replace({'None':np.NaN},inplace=True)
 # N_SRM.replace({'None':np.NaN},inplace=True)
 
@@ -129,31 +129,31 @@ first merged for each database and then all the databases are concatenated.'''
 # #CHBMP
 # d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
 # #BIOMARCADORES
-# d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
+d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
 #DUQUE
 mergeDUQUE=datosICC[datosICC['database']=='DUQUE']
 mergeDUQUE=mergeDUQUE.drop(['group'], axis=1)
 d_DUQUE=pd.merge(mergeDUQUE,N_DUQUE)
 #Data concatenation
 #d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
-d_B=d_DUQUE
+d_B=pd.concat([d_BIO,d_DUQUE])
 
 d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) 
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
 d_B['education'] = d_B['education'].astype('float64')
-d_B['group'].replace({'CTR':'Control','G4':'Control','G3':'DTA'}, inplace=True)
+#d_B['group'].replace({'CTR':'Control','G4':'Control','G3':'DTA'}, inplace=True)
 
 '''Look at the amount of empty data in the databases before and after 
 merging powers with demographic data and neuropsychological tests.'''
 
 #Amount of empty data from the demographic data without joining with powers
 df_dem=pd.DataFrame()
-# df_dem['BIOMARCADORES']=N_BIO.isnull().sum()
+df_dem['BIOMARCADORES']=N_BIO.isnull().sum()
 # df_dem['CHBMP']=N_CHBMP.isnull().sum()
 # df_dem['SRM']=N_SRM.isnull().sum()
 df_dem['DUQUE']=N_DUQUE.isnull().sum()
 
-# print('\nTotal de datos demograficos BIOMARCADORES',len(N_BIO))
+print('\nTotal de datos demograficos BIOMARCADORES',len(N_BIO))
 # print('Total de datos demograficos CHBMP ',len(N_CHBMP))
 # print('Total de datos demograficos SRM ',len(N_SRM))
 print('Total de datos demograficos DUQUE ',len(N_DUQUE))
@@ -177,7 +177,7 @@ l=[] #list to store indexes that are not to be removed from the dataframe
 '''With the dropna function, the database remains only with the data without empty data, 
 and with the index function, it is possible to store the indexes without empty data in the list "l".'''
 
-# l.extend(d_B[d_B['database']=='BIOMARCADORES'].dropna(subset=['MM_total','FAS_F']).index.tolist())
+l.extend(d_B[d_B['database']=='BIOMARCADORES'].dropna(subset=['MM_total','FAS_F']).index.tolist())
 # l.extend(d_B[d_B['database']=='SRM'].dropna(subset=['FAS_F']).index.tolist())
 # l.extend(d_B[d_B['database']=='CHBMP'].dropna(subset=['MM_total','education']).index.tolist())
 l.extend(d_B[d_B['database']=='DUQUE'].dropna(subset=['MM_total','education','age','sex']).index.tolist())
@@ -194,7 +194,7 @@ d_B.reset_index().to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFi
 
 print('Dataframe de potencias de componentes por columnas  y con datos demograficos guardado')
 
-#d_B=d_B[d_B['database']=='DUQUE']
+
 
 '''The dataframe is organized with all the powers in a single column to make the graphs in an easier way'''
 dataframe_long_components(d_B,'Power',columns=columns_powers_ic,name='Datos_componentes_formatolargo_filtrados',path=path)
