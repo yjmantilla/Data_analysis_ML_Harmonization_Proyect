@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 from IPython.display import HTML, display_html, display
 import collections
 from Funciones import dataframe_long_roi,dataframe_long_components,dataframe_componentes_deseadas,dataframe_long_cross_ic,dataframe_long_cross_roi
-from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois
-from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic
+from Funciones import columns_SL_roi,columns_coherence_roi,columns_entropy_rois,columns_powers_rois
+from Funciones import columns_SL_ic,columns_coherence_ic,columns_entropy_ic,columns_powers_ic
 from Funciones import ver_datos_vacios
 
 path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
@@ -164,7 +164,7 @@ d_DUQUE=pd.merge(d_DUQUE,DUQUE_cr)
 
 #d_B_com=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])#Union de todos los dataframes
 d_B_com=pd.concat([d_BIO,d_DUQUE])#Union de todos los dataframes
-
+d_B_com['group'].replace({'CTR':'Control','G4':'Control','G3':'DTA'}, inplace=True)
 d_B_com.reset_index(inplace=True)
 d_B_com.to_feather('{path}\Datosparaorganizardataframes\Data_complete_ic.feather'.format(path=path))
 
@@ -173,6 +173,9 @@ ver_datos_vacios(d_B_com)
 """Conversion of dataframes to perform the different SL, coherence, entropy, cross frequency, etc. graphs"""
 
 #New dataframes from ROIs
+#Dataframes are saved by ROI and components for graphics.
+dataframe_long_roi(d_B_roi,'Power',columns=columns_powers_rois,name="data_long_power_roi_without_oitliers",path=path)
+
 #SL
 dataframe_long_roi(d_B_roi,type='SL',columns=columns_SL_roi,name="data_long_sl_roi",path=path)
 #Coherencia
@@ -183,6 +186,8 @@ dataframe_long_roi(d_B_roi,type='Entropy',columns=columns_entropy_rois,name="dat
 dataframe_long_cross_roi(d_B_roi,type='Cross Frequency',columns=columns_cross_roi,name="data_long_crossfreq_roi",path=path)
 
 #New dataframes from Independent components
+dataframe_long_components(d_B_com,'Power',columns=columns_powers_ic,name="data_long_power_components_without_oitliers",path=path)
+
 #SL
 dataframe_long_components(d_B_com,type='SL',columns=columns_SL_ic,name="data_long_sl_components",path=path)
 #Coherencia

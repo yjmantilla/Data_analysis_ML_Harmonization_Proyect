@@ -73,6 +73,7 @@ def text_format(val,value):
 
 def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
     import dataframe_image as dfi
+    
     databases=data['database'].unique()
     tablas={}
     for DB in databases:
@@ -131,13 +132,16 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
 
 def table_groups_DB(data,metric,space,path,name_band,id,id_cross=None):
     import dataframe_image as dfi
-
-    ez=data.groupby([space,'group'])
-    ez.apply(lambda data:pg.compute_effsize(data[data['database']=='BIOMARCADORES'][metric],data[data['database']=='DUQUE'][metric])).to_frame()
+    datos=data[data['group']!='DCL'].copy()
+    ez=datos.groupby([space,'group']).apply(lambda datos:pg.compute_effsize(datos[datos['database']=='BIOMARCADORES'][metric],datos[datos['database']=='DUQUE'][metric])).to_frame()
+    ez=ez.rename(columns={0:'effect size'})
     ez['A']='BIOMARCADORES'
     ez['B']='DUQUE'
     ez['Prueba']='effect size'
     table=ez
+    table.reset_index( level = [0,1],inplace=True )
+    table=pd.pivot_table(table,values=['effect size'],columns=['Prueba'],index=[space,'group','A', 'B'])
+    table.columns=['effect size']
     if id_cross==None:
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table_DB.png'.format(path=path,name_band=name_band,id=id,type=metric)  
     else:
@@ -159,7 +163,7 @@ def joinimages(paths):
         new_im.paste(im, (x_offset,0))
         x_offset += im.size[0]
     new_im.save(paths[1])
-    print('Done')
+    print('Done!')
 
 path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
 
@@ -175,8 +179,8 @@ data_e_com=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_entro
 data_cr_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_roi.feather'.format(path=path))
 data_cr_com=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_crossfreq_components.feather'.format(path=path))
 
-datos_roi={'Cross Frequency':data_cr_roi,'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi}
-datos_com={'Cross Frequency':data_cr_com,'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com}
+datos_roi={'Power':data_p_roi,'SL':data_sl_roi,'Coherence':data_c_roi,'Entropy':data_e_roi,'Cross Frequency':data_cr_roi}
+datos_com={'Power':data_p_com,'SL':data_sl_com,'Coherence':data_c_com,'Entropy':data_e_com,'Cross Frequency':data_cr_com}
 
 bands= data_sl_com['Band'].unique()
 bandsm= data_cr_com['M_Band'].unique()
@@ -187,7 +191,8 @@ for band in bands:
         d_banda_roi=d_roi[d_roi['Band']==band]
         d_com=datos_com[metric]
         d_banda_com=d_com[d_com['Band']==band]
-        if metric!='Cross Frequency':   
+        if metric!='Cross Frequency':  
+            print(str(band)+' '+str(metric)) 
             table_roi=stats_pair(d_banda_roi,metric,'ROI',path,band,'ROI')
             table_com=stats_pair(d_banda_com,metric,'Component',path,band,'IC') 
             path_roi=graphics(d_banda_roi,metric,path,band,'ROI',num_columns=2,save=True,plot=False)
@@ -196,16 +201,24 @@ for band in bands:
             tg_com=table_groups_DB(d_banda_com,metric,'Component',path,band,'IC',id_cross=None)
             joinimages([path_roi,table_roi,tg_roi])
             joinimages([path_com,table_com,tg_com])
+            os.remove(tg_roi)
+            os.remove(tg_com)
+            
         else:
-            for bandm in bandsm:   
+            for bandm in bandsm:  
+                print(str(band)+' '+str(metric)+' '+str(bandm)) 
                 if d_banda_roi[d_banda_roi['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
                     table_roi=stats_pair(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
                     path_roi=graphics(d_banda_roi[d_banda_roi['M_Band']==bandm],'Cross Frequency',path,band,'ROI',id_cross=bandm,num_columns=2,save=True,plot=False)
                     tg_roi=table_groups_DB(d_banda_roi[d_banda_roi['M_Band']==bandm],metric,'ROI',path,band,'ROI',id_cross=bandm)
-                    joinimages([path_roi,table_roi,tg_roi])               
+                    joinimages([path_roi,table_roi,tg_roi])    
+                    os.remove(tg_roi)
+                   
                 if d_banda_com[d_banda_com['M_Band']==bandm]['Cross Frequency'].iloc[0]!=0:
                     table_com=stats_pair(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm) 
                     path_com=graphics(d_banda_com[d_banda_com['M_Band']==bandm],'Cross Frequency',path,band,'IC',id_cross=bandm,num_columns=4,save=True,plot=False)
                     tg_com=table_groups_DB(d_banda_com[d_banda_com['M_Band']==bandm],metric,'Component',path,band,'IC',id_cross=bandm)
                     joinimages([path_com,table_com,tg_com])
+                    os.remove(tg_com)    
+                
 print('Graficos SL,coherencia,entropia y cross frequency guardados')
