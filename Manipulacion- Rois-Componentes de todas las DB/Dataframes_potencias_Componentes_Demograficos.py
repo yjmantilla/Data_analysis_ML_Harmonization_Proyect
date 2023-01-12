@@ -17,13 +17,12 @@ from Funciones import  dataframe_long_components,dataframe_componentes_deseadas
 "Power data loading by independent components"
 
 path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' 
-# SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_powers_components_norm_SRM.feather'.format(path=path))
-# CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_powers_components_norm_CHBMP.feather'.format(path=path))
+SRM=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resteyesc_power_columns_components_SRM.feather'.format(path=path))
+CHBMP=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_protmap_power_columns_components_CHBMP.feather'.format(path=path))
 BIO=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_CE_power_columns_components_BIOMARCADORES.feather'.format(path=path))
 DUQUE=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_resting_power_columns_components_DUQUE.feather'.format(path=path))
 
-#datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #Data concatenation
-datos=pd.concat([BIO,DUQUE]) #Data concatenation
+datos=pd.concat([SRM,BIO,CHBMP,DUQUE]) #Data concatenation
 "Only the desired columns are taken from the dataframe"
 datos1=dataframe_componentes_deseadas(datos,columnas=['participant_id', 'visit', 'group','condition','database'])
 
@@ -95,20 +94,20 @@ for i in subjects_bio:
             N_BIO.loc[index1,['MM_total','FAS_F','FAS_A','FAS_S']]=N_BIO.loc[index0,['MM_total','FAS_F','FAS_A','FAS_S']]
 
 
-# #CHBMP
-# D_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\Demographic_data_CHBMP.csv".format(path=path),header=1, sep=",")
-# col_demC=['Code', 'Gender', 'Age',  'Education Level ']
-# Dem_CHBMP=D_CHBMP.loc[:,col_demC]
-# MMSE_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\MMSE_CHBMP.csv".format(path=path),header=1)
-# MMSE_CHBMP=MMSE_CHBMP.loc[:,['Code', 'Total Score']]
-# N_CHBMP=pd.merge(left=Dem_CHBMP,right=MMSE_CHBMP, how='left', left_on='Code', right_on='Code')
-# N_CHBMP = N_CHBMP.rename(columns={'Code':'participant_id','Age':'age','Gender':'sex','Education Level ':'education','Total Score':'MM_total'})
-# N_CHBMP['participant_id']='sub-'+N_CHBMP['participant_id']
+#CHBMP
+D_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\Demographic_data_CHBMP.csv".format(path=path),header=1, sep=",")
+col_demC=['Code', 'Gender', 'Age',  'Education Level ']
+Dem_CHBMP=D_CHBMP.loc[:,col_demC]
+MMSE_CHBMP=pd.read_csv(r"{path}\Datosparaorganizardataframes\MMSE_CHBMP.csv".format(path=path),header=1)
+MMSE_CHBMP=MMSE_CHBMP.loc[:,['Code', 'Total Score']]
+N_CHBMP=pd.merge(left=Dem_CHBMP,right=MMSE_CHBMP, how='left', left_on='Code', right_on='Code')
+N_CHBMP = N_CHBMP.rename(columns={'Code':'participant_id','Age':'age','Gender':'sex','Education Level ':'education','Total Score':'MM_total'})
+N_CHBMP['participant_id']='sub-'+N_CHBMP['participant_id']
 
-# #SRM
-# N_SRM=pd.read_csv("{path}\Datosparaorganizardataframes\participantsSRM.tsv".format(path=path),sep='\t')
-# N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_1','vf_2','vf_3']] 
-# N_SRM = N_SRM.rename(columns={'vf_1':'FAS_F','vf_2':'FAS_S','vf_3':'FAS_A'}) 
+#SRM
+N_SRM=pd.read_csv("{path}\Datosparaorganizardataframes\participantsSRM.tsv".format(path=path),sep='\t')
+N_SRM=N_SRM.loc[:,['participant_id', 'age', 'sex','vf_1','vf_2','vf_3']] 
+N_SRM = N_SRM.rename(columns={'vf_1':'FAS_F','vf_2':'FAS_S','vf_3':'FAS_A'}) 
 
 #DUQUE
 N_DUQUE=pd.read_csv('{path}\Datosparaorganizardataframes\demograficosDUQUE.csv'.format(path=path),sep=";")
@@ -118,25 +117,24 @@ N_DUQUE['participant_id']='sub-'+N_DUQUE['participant_id']
 
 #None is replaced by NaN
 N_BIO.replace({'None':np.NaN},inplace=True)
-# N_CHBMP.replace({'None':np.NaN},inplace=True)
-# N_SRM.replace({'None':np.NaN},inplace=True)
+N_CHBMP.replace({'None':np.NaN},inplace=True)
+N_SRM.replace({'None':np.NaN},inplace=True)
 
 '''The power data is merged with the demographic data, 
 first merged for each database and then all the databases are concatenated.'''
 
-# #SRM
-# d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='left', left_on='participant_id', right_on='participant_id')
-# #CHBMP
-# d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
-# #BIOMARCADORES
+#SRM
+d_SRM=pd.merge(left=datosICC[datosICC['database']=='SRM'],right=N_SRM , how='left', left_on='participant_id', right_on='participant_id')
+#CHBMP
+d_CHBMP=pd.merge(datosICC[datosICC['database']=='CHBMP'],N_CHBMP)
+#BIOMARCADORES
 d_BIO=pd.merge(datosICC[datosICC['database']=='BIOMARCADORES'],N_BIO)
 #DUQUE
 mergeDUQUE=datosICC[datosICC['database']=='DUQUE']
 mergeDUQUE=mergeDUQUE.drop(['group'], axis=1)
 d_DUQUE=pd.merge(mergeDUQUE,N_DUQUE)
 #Data concatenation
-#d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
-d_B=pd.concat([d_BIO,d_DUQUE])
+d_B=pd.concat([d_SRM,d_BIO,d_DUQUE,d_CHBMP])
 
 d_B['sex'].replace({'f':'F','m':'M','Masculino':'M','Femenino':'F'}, inplace=True) 
 d_B['education'].replace({'None':np.NaN,'University School':'17','High School':'12', 'Secondary School':'11','College School':'16',}, inplace=True)
@@ -149,17 +147,14 @@ merging powers with demographic data and neuropsychological tests.'''
 #Amount of empty data from the demographic data without joining with powers
 df_dem=pd.DataFrame()
 df_dem['BIOMARCADORES']=N_BIO.isnull().sum()
-# df_dem['CHBMP']=N_CHBMP.isnull().sum()
-# df_dem['SRM']=N_SRM.isnull().sum()
+df_dem['CHBMP']=N_CHBMP.isnull().sum()
+df_dem['SRM']=N_SRM.isnull().sum()
 df_dem['DUQUE']=N_DUQUE.isnull().sum()
 
 print('\nTotal de datos demograficos BIOMARCADORES',len(N_BIO))
-# print('Total de datos demograficos CHBMP ',len(N_CHBMP))
-# print('Total de datos demograficos SRM ',len(N_SRM))
+print('Total de datos demograficos CHBMP ',len(N_CHBMP))
+print('Total de datos demograficos SRM ',len(N_SRM))
 print('Total de datos demograficos DUQUE ',len(N_DUQUE))
-
-
-
 
 print('\nCantidad de datos vacios antes de unir el dataframe con los datos demograficos')
 print(df_dem)
@@ -178,8 +173,8 @@ l=[] #list to store indexes that are not to be removed from the dataframe
 and with the index function, it is possible to store the indexes without empty data in the list "l".'''
 
 l.extend(d_B[d_B['database']=='BIOMARCADORES'].dropna(subset=['MM_total','FAS_F']).index.tolist())
-# l.extend(d_B[d_B['database']=='SRM'].dropna(subset=['FAS_F']).index.tolist())
-# l.extend(d_B[d_B['database']=='CHBMP'].dropna(subset=['MM_total','education']).index.tolist())
+l.extend(d_B[d_B['database']=='SRM'].dropna(subset=['FAS_F']).index.tolist())
+l.extend(d_B[d_B['database']=='CHBMP'].dropna(subset=['MM_total','education']).index.tolist())
 l.extend(d_B[d_B['database']=='DUQUE'].dropna(subset=['MM_total','education','age','sex']).index.tolist())
 
 lista=list(set(l))

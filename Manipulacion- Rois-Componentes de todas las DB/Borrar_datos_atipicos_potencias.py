@@ -22,7 +22,7 @@ data_Comp=data_Comp.drop(columns='index')
 data_Comp_copy=removing_outliers(data_Comp,columns_powers_ic)# dataframe without outliers
 
 #The dataframe of independent component powers is saved without atypical data
-data_Comp_copy.reset_index().to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather'.format(path=path))
+data_Comp_copy.to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas_sin_atipicos.feather'.format(path=path))
 print('\nFinalización de eliminación de datos atipicos de componentes')
 
 'Eliminating outliers in powers by ROIs'
@@ -33,7 +33,7 @@ data_roi=data_roi.drop(columns='index')
 data_roi_copy=removing_outliers(data_roi,columns_powers_rois)# dataframe without outliers
 
 #The dataframe of ROIs powers is saved without atypical data
-data_roi_copy.reset_index().to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas_sin_atipicos.feather'.format(path=path))
+data_roi_copy.to_feather('{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_ROIporcolumnas_sin_atipicos.feather'.format(path=path))
 print('\nFinalización de eliminación de datos atipicos de ROIs')
 
 

@@ -33,7 +33,7 @@ def dataframe_long_roi(data,type,columns,name,path):
         d_sep= d_sep.rename(columns={i:type})
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new['ROI']=data_new['ROI'].replace({'T_':'T'}, regex=True)#Quito el _ y lo reemplazo con '' 
-    data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
+    data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
     print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_components(data,type,columns,name,path):
@@ -62,7 +62,7 @@ def dataframe_long_components(data,type,columns,name,path):
         d_sep['Component']=[componente]*len(d_sep)
         d_sep= d_sep.rename(columns={i:type})
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
-    data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
+    data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
     print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_cross_roi(data,type,columns,name,path):
@@ -99,7 +99,7 @@ def dataframe_long_cross_roi(data,type,columns,name,path):
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new['ROI']=data_new['ROI'].replace({'T_':'T'}, regex=True)#Quito el _ y lo reemplazo con '' 
     data_new['Band']=data_new['Band'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con ''
-    data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
+    data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
     print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_long_cross_ic(data,type='Cross Frequency',columns=None,name=None,path=None):
@@ -133,7 +133,7 @@ def dataframe_long_cross_ic(data,type='Cross Frequency',columns=None,name=None,p
         d_sep= d_sep.rename(columns={i:type})
         data_new=data_new.append(d_sep,ignore_index = True) #Uno el dataframe 
     data_new['Band']=data_new['Band'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con ''
-    data_new.reset_index().to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
+    data_new.reset_index(drop=True).to_feather('{path}\Datosparaorganizardataframes\{name}.feather'.format(path=path,name=name))
     print('Dataframe para graficos de {type} guardado: {name}'.format(type=type,name=name))
 
 def dataframe_componentes_deseadas(data,columnas):
@@ -193,7 +193,7 @@ def removing_outliers(data,columns):
                 data_copy.drop(index_to_delete, inplace = True)
                 bandera=False #se cambia la bandera para que no entre mas al while
                 #print(porcentaje)
-    data_copy.drop(columns='index')
+    data_copy=data_copy.drop(columns='index')
     #Para observar un resumen de los datos antes y despues de eliminar sujetos con mayor cantidad de datos atipicos
     for db in databases:
         print('\nBase de datos '+db)
@@ -202,6 +202,7 @@ def removing_outliers(data,columns):
         print('Despues de eliminar datos atipicos')
         print(data_copy[data_copy['database']==db].shape)
         print('Porcentaje que se elimino %',100-data_copy[data_copy['database']==db].shape[0]*100/data[data['database']==db].shape[0])
+    data_copy=data_copy.reset_index(drop=True)
     return data_copy
 
 #Amount of empty data from demographic data after merging with powers

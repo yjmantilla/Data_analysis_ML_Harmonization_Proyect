@@ -77,11 +77,16 @@ def text_format(val,value):
     return 'background-color: %s' % color
 
 def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
-    databases=data['database'].unique()
-    tablas={}
+    databases=data['database'].unique().tolist()
     for DB in databases:
         data_DB=data[data['database']==DB]
         groups=data_DB['group'].unique()
+        if len(groups)==1:
+            databases.remove(DB)
+    tablas={}
+    for DB in databases:
+        data_DB=data[data['database']==DB]
+        #groups=data_DB['group'].unique()
         #combinaciones = list(combinations(groups, 2))
         combinaciones=[('Control', 'DTA'), ('G1', 'G2')]
         test_ez={}
@@ -164,28 +169,44 @@ def std_poolsd(x,y):
     return d
 
 def table_groups_DB(data,metric,space,path,name_band,id,id_cross=None):
-    datos=data[data['group']!='DCL'].copy()
-    #Effect size
-    ez=datos.groupby([space,'group']).apply(lambda datos:pg.compute_effsize(datos[datos['database']=='BIOMARCADORES'][metric],datos[datos['database']=='DUQUE'][metric])).to_frame()
-    ez=ez.rename(columns={0:'effect size'})
-    ez['A']='BIOMARCADORES'
-    ez['B']='DUQUE'
-    ez['Prueba']='effect size'
-    #cv
-    mean=data[metric].mean()
-    std=datos.groupby([space,'group']).apply(lambda datos:std_poolsd(datos[datos['database']=='BIOMARCADORES'][metric],datos[datos['database']=='DUQUE'][metric])/mean).to_frame()
-    cv=std.rename(columns={0:'cv'})
-    cv['A']='BIOMARCADORES'
-    cv['B']='DUQUE'
-    cv['Prueba']='cv'
-    table=pd.concat([ez,cv],axis=0)
-    #table=ez
-    #table.reset_index( level = [0,1],inplace=True )
-    #table=pd.pivot_table(table,values=['effect size'],columns=['Prueba'],index=[space,'group','A', 'B'])
-    #table.columns=['effect size']
-    table=pd.pivot_table(table,values=['effect size','cv'],columns=['Prueba'],index=['group',space,'A', 'B'])
-    table.columns=['cv','effect size']
-
+    data=data[data['group']!='DCL'].copy()
+    groups=data['group'].unique().tolist()
+    tablas={}
+    for g in groups:
+        data_g=data[data['group']==g]
+        databases=data_g['database'].unique()
+        combinaciones = list(combinations(databases, 2))
+        test_ez={}
+        test_std={}
+        for i in combinaciones:
+            #Effect size
+            ez=data_g.groupby(['group',space]).apply(lambda data_g:pg.compute_effsize(data_g[data_g['database']==i[0]][metric],data_g[data_g['database']==i[1]][metric])).to_frame()
+            ez=ez.rename(columns={0:'effect size'})
+            ez['A']=i[0]
+            ez['B']=i[1]
+            ez['Prueba']='effect size'
+            test_ez['effsize-'+i[0]+'-'+i[1]]=ez
+            #cv
+            std=data_g.groupby(['group',space]).apply(lambda data_g:np.std(np.concatenate((data_g[data_g['database']==i[0]][metric],data_g[data_g['database']==i[1]][metric]),axis=0))).to_frame()
+            std=std.rename(columns={0:'cv'})
+            std['A']=i[0]
+            std['B']=i[1]
+            std['Prueba']='cv'
+            test_std['cv-'+i[0]+'-'+i[1]]=std
+        table_ez=pd.concat(list(test_ez.values()),axis=0)
+        table_ez.reset_index( level = [0],inplace=True )
+        table_std=pd.concat(list(test_std.values()),axis=0)
+        table_std.reset_index( level = [0],inplace=True )
+        table_concat=pd.concat([table_ez,table_std],axis=0)
+        table=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=['group',space,'A', 'B'])
+        # table=table.T
+        # table=table.swaplevel(0, 1)
+        # table.sort_index(level=0,inplace=True)
+        # table=table.T
+        tablas[g]=table
+        table.columns=['effect size','cv']
+        tablas[g]=table
+    table=pd.concat(list(tablas.values()),axis=0)
     if id_cross==None:
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table_DB.png'.format(path=path,name_band=name_band,id=id,type=metric)  
     else:
@@ -193,7 +214,6 @@ def table_groups_DB(data,metric,space,path,name_band,id,id_cross=None):
     #table=table.style.applymap(text_format,value=0.7,subset=['effect size'])
     save_table = table.copy()
     table=table.style.applymap(text_format,value=0.2,subset=['effect size']).applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
-
     dfi.export(table, path_complete)
     return path_complete,save_table
 
@@ -212,7 +232,7 @@ def joinimages(paths):
     new_im.save(paths[1])
     print('Done!')
 
-path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
+path=r'C:\Users\valec\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD' #Cambia dependieron de quien lo corra
 
 #data loading
 data_p_roi=pd.read_feather(r'{path}\Datosparaorganizardataframes\data_long_power_roi_without_oitliers.feather'.format(path=path))
@@ -262,10 +282,6 @@ for metric in datos_roi.keys():
             matrix_com = matrix_com.append(check_com, ignore_index = True)
             matrix_roi = matrix_roi.append(check_tg_roi, ignore_index = True)
             matrix_com = matrix_com.append(check_tg_com, ignore_index = True)
-            print(check_roi)
-            print(check_com)
-            print(matrix_roi)
-            print(matrix_com)
             
         else:
             for bandm in bandsm:  
@@ -293,7 +309,7 @@ for metric in datos_roi.keys():
                     matrix_com = matrix_com.append(check_tg_com, ignore_index = True)   
 
 
-filename = r"C:\Users\veroh\OneDrive - Universidad de Antioquia\Resultados_Armonizacion_BD\check.xlsx"
+filename = r"{path}\check1.xlsx".format(path=path)
 writer = pd.ExcelWriter(filename)
 matrix_com.to_excel(writer ,sheet_name='Component')
 matrix_roi.to_excel(writer ,sheet_name='ROI')
