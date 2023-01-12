@@ -29,7 +29,7 @@ def graphic_dem(data,x_data,y_data,col,kind,bbox_x,left,path,title,id,save=True,
     
     return 
 
-data_Comp=pd.read_feather(r"{path}\Datosparaorganizardataframes\BasesdeDatosFiltradas_componenteporcolumnas.feather".format(path=path))#Datos con sujetos sin datos vaciosbands= data_Comp['Band'].unique()graphic_dem(data_Comp,'group','age',None,'swarm',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','swarm',save=True,plot=False)
+data_Comp=pd.read_feather(r"{path}\Datosparaorganizardataframes\Data_complete_ic.feather".format(path=path))#Datos con sujetos sin datos vaciosbands= data_Comp['Band'].unique()graphic_dem(data_Comp,'group','age',None,'swarm',0.5,None,'Distribucion de edades por cada grupo en cada base de datos','swarm',save=True,plot=False)
 graphic_dem(data_Comp,'group','age',None,'box',0.5,None,path,'Distribucion de edades por cada grupo en cada base de datos','box',save=True,plot=False)
 graphic_dem(data_Comp,'sex','age','group','swarm',0.5,None,path,'Distribucion de edades por genero en cada grupo de cada base de datos','swarm',save=True,plot=False)
 graphic_dem(data_Comp,'sex','age','group','box',0.5,None,path,'Distribucion de edades por genero en cada grupo de cada base de datos','box',save=True,plot=False)
