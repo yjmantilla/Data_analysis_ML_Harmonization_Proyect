@@ -86,12 +86,9 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
     tablas={}
     for DB in databases:
         data_DB=data[data['database']==DB]
-        #groups=data_DB['group'].unique()
-        #combinaciones = list(combinations(groups, 2))
         combinaciones=[('Control', 'DTA'), ('G1', 'G2')]
         test_ez={}
         test_std={}
-        test_manu={}
         for i in combinaciones:
             #Effect size
             ez=data_DB.groupby(['database',space]).apply(lambda data_DB:pg.compute_effsize(data_DB[data_DB['group']==i[0]][metric],data_DB[data_DB['group']==i[1]][metric])).to_frame()
@@ -107,35 +104,13 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
             std['B']=i[1]
             std['Prueba']='cv'
             test_std['cv-'+i[0]+'-'+i[1]]=std
-            # #Mannwhitneyu
-            # manu=data_DB.groupby(['database',space]).apply(lambda data_DB:pg.mwu(data_DB[data_DB['group']==i[0]][metric],data_DB[data_DB['group']==i[1]][metric]))
-            # manu['A']=i[0]
-            # manu['B']=i[1]
-            # test_manu['Mannwhitneyu-'+i[0]+'-'+i[1]]=manu.loc[:,['U-val', 'p-val', 'A', 'B']]    
+            
         table_ez=pd.concat(list(test_ez.values()),axis=0)
         table_ez.reset_index( level = [0,1],inplace=True )
         table_std=pd.concat(list(test_std.values()),axis=0)
         table_std.reset_index( level = [0,1],inplace=True )
-        # table_manu=pd.concat(list(test_manu.values()),axis=0)
-        # table_manu.reset_index( level = [0,1,2],inplace=True )
-        # table_manu.rename(columns={'level_2':'Prueba'},inplace=True)
-        # #Gameshowell
-        # g=data_DB.groupby(['database',space]).apply(lambda data_DB:pg.pairwise_gameshowell(data_DB,dv=metric,between='group'))
-        # g.reset_index( level = [0,1,2],inplace=True )
-        # g.drop(columns=['level_2'],inplace=True)
-        # g['Prueba']='Gameshowell'
-        # table_g=g.loc[:,[ 'database', space,'Prueba','diff','pval','A', 'B' ]]
-        # table_g.rename(columns={'pval':'p-val'},inplace=True)
-        #Union de todas las puerbas
-        #table=pd.concat([table_ez,table_manu,table_g],axis=0)
-        #table=pd.merge(table_ez, table_std, on=['database','ROI','A','B']) #veronica
         table_concat=pd.concat([table_ez,table_std],axis=0)
-        #table=pd.pivot_table(table,values=['effect size','U-val','diff','p-val'],columns=['Prueba'],index=['database',space,'A', 'B'])
         table=pd.pivot_table(table_concat,values=['effect size','cv'],columns=['Prueba'],index=['database',space,'A', 'B'])
-        # table=table.T
-        # table=table.swaplevel(0, 1)
-        # table.sort_index(level=0,inplace=True)
-        # table=table.T
         tablas[DB]=table
         table.columns=['effect size','cv']
         tablas[DB]=table
@@ -144,9 +119,7 @@ def stats_pair(data,metric,space,path,name_band,id,id_cross=None):
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric)  
     else:
         path_complete='{path}\Graficos_{type}\{id}\{name_band}_{id_cross}_{type}_{id}_table.png'.format(path=path,name_band=name_band,id=id,type=metric,id_cross=id_cross)
-    #table=table.style.applymap(text_format,value=0.05,subset=[('Gameshowell','p-val'),('MWU','p-val')]).applymap(text_format,value=0.8,subset=[('effect size', 'effect size')])
-    #table=table.style.applymap(text_format,value=0.7,subset=['effect size'])
-    save_table = table.copy()
+        save_table = table.copy()
     table=table.style.applymap(text_format,value=0.7,subset=['effect size']).applymap(text_format,value=0.0,subset=['cv'])
     dfi.export(table, path_complete)
     return path_complete,save_table
