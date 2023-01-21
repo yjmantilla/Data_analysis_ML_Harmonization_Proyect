@@ -24,13 +24,13 @@ def graphics_bar(data,type,path,name_band,id,id_cross=None,num_columns=None,save
     #     col='Component'
     # else:
     #     col='ROI'
-    axs=sns.catplot(x=id,y='effect size',data=data,hue='Compared groups',dodge=True, kind="bar",col=name_band,col_wrap=num_columns,linewidth=0.5,palette='mako',legend=False)
+    axs=sns.catplot(x=id,y='effect size',data=data,hue='Compared groups',dodge=True, kind="bar",col=name_band,col_wrap=num_columns,linewidth=0.5,palette="cubehelix",legend=False)
     axs.set(xlabel=None)
     axs.set(ylabel=None)
     if id_cross==None:
-        axs.fig.suptitle('Effect size on the metric '+type+' in the '+id+' of normalized data given by the databases',x=0.5,y=0.95)
+        axs.fig.suptitle('Effect size on the metric '+r'$\bf{'+type+r'}$'+' in the '+r'$\bf{'+id+r'}$'+' of normalized data given by the databases',x=0.5,y=0.95)
     else:
-        axs.fig.suptitle(type+' in '+id_cross+' of in the '+id+' of normalized data given by the databases',x=0.5,y=0.95)
+        axs.fig.suptitle(r'$\bf{'+type+r'}$'+' in '+r'$\bf{'+id_cross+r'}$'+' of in the '+r'$\bf{'+id+r'}$'+' of normalized data given by the databases',x=0.5,y=0.95)
 
 
     if id=='Component':
@@ -49,9 +49,9 @@ def graphics_bar(data,type,path,name_band,id,id_cross=None,num_columns=None,save
         plt.show()
     if save==True:
         if id_cross==None:
-            path_complete='{path}\Graficos_resultados_effect_size/bands_{type}_{id}.png'.format(path=path,id=id,type=type)  
+            path_complete='{path}\Graficos_resultados_effect_size_sin_cv/bands_{type}_{id}.png'.format(path=path,id=id,type=type)  
         else:
-            path_complete='{path}\Graficos_resultados_effect_size/mbands_{id_cross}_{type}_{id}.png'.format(path=path,id=id,type=type,id_cross=id_cross)
+            path_complete='{path}\Graficos_resultados_effect_size_sin_cv/mbands_{id_cross}_{type}_{id}.png'.format(path=path,id=id,type=type,id_cross=id_cross)
         plt.savefig(path_complete)
     plt.close()
     return 
@@ -62,7 +62,7 @@ path=r'C:\Users\veroh\OneDrive - Universidad de Antioquia\Resultados_Armonizacio
 
 for i in ['Component','ROI']:
         
-    data_cv=pd.read_excel("{path}\check_con_cv.xlsx".format(path=path),sheet_name=i)
+    data_cv=pd.read_excel("{path}\check_sin_cv.xlsx".format(path=path),sheet_name=i)
     data_cv=data_cv.sort_values(['metric',i,'Compared groups','band','mband'])
     metrics=data_cv['metric'].unique()
     bands=data_cv['band'].unique()
