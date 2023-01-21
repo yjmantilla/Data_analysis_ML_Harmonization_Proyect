@@ -28,22 +28,23 @@ def graphics_bar(data,type,path,name_band,id,id_cross=None,num_columns=None,save
     axs.set(xlabel=None)
     axs.set(ylabel=None)
     if id_cross==None:
-        axs.fig.suptitle('Effect size on the metric '+type+' in the '+id+' of normalized data given by the databases')
+        axs.fig.suptitle('Effect size on the metric '+type+' in the '+id+' of normalized data given by the databases',x=0.5,y=0.95)
     else:
-        axs.fig.suptitle(type+' in '+id_cross+' of in the '+id+' of normalized data given by the databases')
+        axs.fig.suptitle(type+' in '+id_cross+' of in the '+id+' of normalized data given by the databases',x=0.5,y=0.95)
+
 
     if id=='Component':
         
-        axs.add_legend(loc='upper right',ncol=6,title="Compared Groups")
-        axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) 
-        axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
-        axs.fig.text(0.01, 0.5,  type, ha='center', va='center',rotation='vertical')
+        axs.add_legend(loc='upper center',ncol=6,title="Compared Groups",bbox_to_anchor=(0.5, 0.9))
+        axs.fig.subplots_adjust(top=0.70,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) 
+        axs.fig.text(0.5, 0.04, 'Group', ha='right', va='center')
+        axs.fig.text(0.01, 0.5,  type, ha='right', va='center',rotation='vertical')
     else:
         
-        axs.add_legend(loc='upper right',ncol=6,title="Compared Groups")
-        axs.fig.subplots_adjust(top=0.85,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) # adjust the Figure in rp
-        axs.fig.text(0.5, 0.04, 'Group', ha='center', va='center')
-        axs.fig.text(0.015, 0.5,  type, ha='center', va='center',rotation='vertical')
+        axs.add_legend(loc='upper center',ncol=6,title="Compared Groups",bbox_to_anchor=(0.5, 0.9))
+        axs.fig.subplots_adjust(top=0.70,bottom=0.121, right=0.986,left=0.06, hspace=0.138, wspace=0.062) # adjust the Figure in rp
+        axs.fig.text(0.5, 0.04, 'Group', ha='right', va='center')
+        axs.fig.text(0.015, 0.5,  type, ha='right', va='center',rotation='vertical')
     if plot:
         plt.show()
     if save==True:
@@ -71,13 +72,13 @@ for i in ['Component','ROI']:
         print(metric)
         data_m=data[data['metric']==metric]
         if metric!='Cross Frequency':
-            graphics_bar(data_m,metric,path,'band',i,id_cross=None,num_columns=4,save=True,plot=True)
+            graphics_bar(data_m,metric,path,'band',i,id_cross=None,num_columns=4,save=True,plot=False)
             print('Done!')
         else:
             for band in bands:
                 data_b=data_m[data_m['band']==band]
                 if data_b.empty!=True:
-                    graphics_bar(data_b,metric,path,'mband',i,id_cross=band,num_columns=4,save=True,plot=True)
+                    graphics_bar(data_b,metric,path,'mband',i,id_cross=band,num_columns=4,save=True,plot=False)
                     print(band)
                     print('Done!')
 
