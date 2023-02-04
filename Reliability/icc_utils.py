@@ -9,12 +9,7 @@ def get_biodf(demofile):
     return  N_BIO
 
 def agefun(x):
-    if x <= 34:
-        return 'Young Adult'
-    elif x >= 41:
-        return 'Middle Age'
-    else:
-        return 'None'
+    return 'Healthy'
 
 def merge_biodatos(datosNoBio,N_BIO):
     N_BIO['Group2']=N_BIO.age.apply(agefun)

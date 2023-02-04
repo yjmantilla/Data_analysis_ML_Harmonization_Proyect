@@ -1,129 +1,65 @@
 ;Description;ICC;F;df1;df2;pval;CI95%;Stage;Group;Bands;Roi
-0;Average fixed raters;0.745957;3.936335;251;753;0.0;[0.69 0.79];Preprocessed data;Young Adult;delta;F
-1;Average fixed raters;0.914492;11.694756;251;753;0.0;[0.9  0.93];Preprocessed data;Young Adult;theta;F
-2;Average fixed raters;0.87769;8.175962;251;753;0.0;[0.85 0.9 ];Preprocessed data;Young Adult;alpha-1;F
-3;Average fixed raters;0.849877;6.661184;251;753;0.0;[0.82 0.88];Preprocessed data;Young Adult;alpha-2;F
-4;Average fixed raters;0.900135;10.013519;251;753;0.0;[0.88 0.92];Preprocessed data;Young Adult;beta1;F
-5;Average fixed raters;0.925704;13.459694;251;753;0.0;[0.91 0.94];Preprocessed data;Young Adult;beta2;F
-6;Average fixed raters;0.915674;11.858693;251;753;0.0;[0.9  0.93];Preprocessed data;Young Adult;beta3;F
-7;Average fixed raters;0.802584;5.065458;251;753;0.0;[0.76 0.84];Preprocessed data;Young Adult;gamma;F
-8;Average fixed raters;0.8251;5.717542;269;807;0.0;[0.79 0.86];Preprocessed data;Young Adult;delta;C
-9;Average fixed raters;0.931385;14.574119;269;807;0.0;[0.92 0.94];Preprocessed data;Young Adult;theta;C
-10;Average fixed raters;0.884214;8.636648;269;807;0.0;[0.86 0.91];Preprocessed data;Young Adult;alpha-1;C
-11;Average fixed raters;0.882689;8.524338;269;807;0.0;[0.86 0.9 ];Preprocessed data;Young Adult;alpha-2;C
-12;Average fixed raters;0.917824;12.168974;269;807;0.0;[0.9  0.93];Preprocessed data;Young Adult;beta1;C
-13;Average fixed raters;0.944461;18.005508;269;807;0.0;[0.93 0.95];Preprocessed data;Young Adult;beta2;C
-14;Average fixed raters;0.921102;12.674559;269;807;0.0;[0.9  0.94];Preprocessed data;Young Adult;beta3;C
-15;Average fixed raters;0.756553;4.107662;269;807;0.0;[0.71 0.8 ];Preprocessed data;Young Adult;gamma;C
-16;Average fixed raters;0.727593;3.670981;341;1023;0.0;[0.68 0.77];Preprocessed data;Young Adult;delta;PO
-17;Average fixed raters;0.91226;11.397363;341;1023;0.0;[0.9  0.93];Preprocessed data;Young Adult;theta;PO
-18;Average fixed raters;0.886649;8.822181;341;1023;0.0;[0.87 0.91];Preprocessed data;Young Adult;alpha-1;PO
-19;Average fixed raters;0.868602;7.610454;341;1023;0.0;[0.84 0.89];Preprocessed data;Young Adult;alpha-2;PO
-20;Average fixed raters;0.901498;10.152116;341;1023;0.0;[0.88 0.92];Preprocessed data;Young Adult;beta1;PO
-21;Average fixed raters;0.937634;16.034304;341;1023;0.0;[0.93 0.95];Preprocessed data;Young Adult;beta2;PO
-22;Average fixed raters;0.895587;9.57739;341;1023;0.0;[0.88 0.91];Preprocessed data;Young Adult;beta3;PO
-23;Average fixed raters;0.862491;7.272243;341;1023;0.0;[0.84 0.88];Preprocessed data;Young Adult;gamma;PO
-24;Average fixed raters;0.683851;3.163061;179;537;0.0;[0.6  0.75];Preprocessed data;Young Adult;delta;T
-25;Average fixed raters;0.926718;13.645857;179;537;0.0;[0.91 0.94];Preprocessed data;Young Adult;theta;T
-26;Average fixed raters;0.898228;9.825917;179;537;0.0;[0.87 0.92];Preprocessed data;Young Adult;alpha-1;T
-27;Average fixed raters;0.876876;8.121891;179;537;0.0;[0.84 0.9 ];Preprocessed data;Young Adult;alpha-2;T
-28;Average fixed raters;0.866273;7.477926;179;537;0.0;[0.83 0.9 ];Preprocessed data;Young Adult;beta1;T
-29;Average fixed raters;0.921124;12.678078;179;537;0.0;[0.9  0.94];Preprocessed data;Young Adult;beta2;T
-30;Average fixed raters;0.869173;7.643665;179;537;0.0;[0.83 0.9 ];Preprocessed data;Young Adult;beta3;T
-31;Average fixed raters;0.688291;3.208119;179;537;0.0;[0.61 0.76];Preprocessed data;Young Adult;gamma;T
-32;Average fixed raters;0.918387;12.252968;251;753;0.0;[0.9  0.93];Preprocessed data;Middle Age;delta;F
-33;Average fixed raters;0.970168;33.521273;251;753;0.0;[0.96 0.98];Preprocessed data;Middle Age;theta;F
-34;Average fixed raters;0.948134;19.28053;251;753;0.0;[0.94 0.96];Preprocessed data;Middle Age;alpha-1;F
-35;Average fixed raters;0.942489;17.388107;251;753;0.0;[0.93 0.95];Preprocessed data;Middle Age;alpha-2;F
-36;Average fixed raters;0.976174;41.971674;251;753;0.0;[0.97 0.98];Preprocessed data;Middle Age;beta1;F
-37;Average fixed raters;0.954315;21.889069;251;753;0.0;[0.94 0.96];Preprocessed data;Middle Age;beta2;F
-38;Average fixed raters;0.973849;38.239336;251;753;0.0;[0.97 0.98];Preprocessed data;Middle Age;beta3;F
-39;Average fixed raters;0.93523;15.439296;251;753;0.0;[0.92 0.95];Preprocessed data;Middle Age;gamma;F
-40;Average fixed raters;0.923823;13.127369;269;807;0.0;[0.91 0.94];Preprocessed data;Middle Age;delta;C
-41;Average fixed raters;0.968941;32.196829;269;807;0.0;[0.96 0.97];Preprocessed data;Middle Age;theta;C
-42;Average fixed raters;0.945696;18.414854;269;807;0.0;[0.93 0.96];Preprocessed data;Middle Age;alpha-1;C
-43;Average fixed raters;0.93216;14.740568;269;807;0.0;[0.92 0.94];Preprocessed data;Middle Age;alpha-2;C
-44;Average fixed raters;0.973647;37.945996;269;807;0.0;[0.97 0.98];Preprocessed data;Middle Age;beta1;C
-45;Average fixed raters;0.96184;26.20571;269;807;0.0;[0.95 0.97];Preprocessed data;Middle Age;beta2;C
-46;Average fixed raters;0.974975;39.960522;269;807;0.0;[0.97 0.98];Preprocessed data;Middle Age;beta3;C
-47;Average fixed raters;0.907713;10.835755;269;807;0.0;[0.89 0.92];Preprocessed data;Middle Age;gamma;C
-48;Average fixed raters;0.91383;11.605024;341;1023;0.0;[0.9  0.93];Preprocessed data;Middle Age;delta;PO
-49;Average fixed raters;0.963621;27.488392;341;1023;0.0;[0.96 0.97];Preprocessed data;Middle Age;theta;PO
-50;Average fixed raters;0.937722;16.057097;341;1023;0.0;[0.93 0.95];Preprocessed data;Middle Age;alpha-1;PO
-51;Average fixed raters;0.939859;16.627618;341;1023;0.0;[0.93 0.95];Preprocessed data;Middle Age;alpha-2;PO
-52;Average fixed raters;0.978095;45.651938;341;1023;0.0;[0.97 0.98];Preprocessed data;Middle Age;beta1;PO
-53;Average fixed raters;0.960629;25.399723;341;1023;0.0;[0.95 0.97];Preprocessed data;Middle Age;beta2;PO
-54;Average fixed raters;0.969638;32.935549;341;1023;0.0;[0.96 0.97];Preprocessed data;Middle Age;beta3;PO
-55;Average fixed raters;0.925845;13.485177;341;1023;0.0;[0.91 0.94];Preprocessed data;Middle Age;gamma;PO
-56;Average fixed raters;0.908507;10.92977;179;537;0.0;[0.88 0.93];Preprocessed data;Middle Age;delta;T
-57;Average fixed raters;0.97109;34.589826;179;537;0.0;[0.96 0.98];Preprocessed data;Middle Age;theta;T
-58;Average fixed raters;0.944834;18.127154;179;537;0.0;[0.93 0.96];Preprocessed data;Middle Age;alpha-1;T
-59;Average fixed raters;0.91612;11.921758;179;537;0.0;[0.89 0.93];Preprocessed data;Middle Age;alpha-2;T
-60;Average fixed raters;0.954205;21.836461;179;537;0.0;[0.94 0.96];Preprocessed data;Middle Age;beta1;T
-61;Average fixed raters;0.918303;12.240409;179;537;0.0;[0.9  0.94];Preprocessed data;Middle Age;beta2;T
-62;Average fixed raters;0.954877;22.161721;179;537;0.0;[0.94 0.96];Preprocessed data;Middle Age;beta3;T
-63;Average fixed raters;0.919169;12.371559;179;537;0.0;[0.9  0.94];Preprocessed data;Middle Age;gamma;T
-64;Average fixed raters;0.745957;3.936335;251;753;0.0;[0.69 0.79];Normalized data;Young Adult;delta;F
-65;Average fixed raters;0.914492;11.694756;251;753;0.0;[0.9  0.93];Normalized data;Young Adult;theta;F
-66;Average fixed raters;0.87769;8.175962;251;753;0.0;[0.85 0.9 ];Normalized data;Young Adult;alpha-1;F
-67;Average fixed raters;0.849877;6.661184;251;753;0.0;[0.82 0.88];Normalized data;Young Adult;alpha-2;F
-68;Average fixed raters;0.900135;10.013519;251;753;0.0;[0.88 0.92];Normalized data;Young Adult;beta1;F
-69;Average fixed raters;0.925704;13.459694;251;753;0.0;[0.91 0.94];Normalized data;Young Adult;beta2;F
-70;Average fixed raters;0.915674;11.858693;251;753;0.0;[0.9  0.93];Normalized data;Young Adult;beta3;F
-71;Average fixed raters;0.802584;5.065458;251;753;0.0;[0.76 0.84];Normalized data;Young Adult;gamma;F
-72;Average fixed raters;0.8251;5.717542;269;807;0.0;[0.79 0.86];Normalized data;Young Adult;delta;C
-73;Average fixed raters;0.931385;14.574119;269;807;0.0;[0.92 0.94];Normalized data;Young Adult;theta;C
-74;Average fixed raters;0.884214;8.636648;269;807;0.0;[0.86 0.91];Normalized data;Young Adult;alpha-1;C
-75;Average fixed raters;0.882689;8.524338;269;807;0.0;[0.86 0.9 ];Normalized data;Young Adult;alpha-2;C
-76;Average fixed raters;0.917824;12.168974;269;807;0.0;[0.9  0.93];Normalized data;Young Adult;beta1;C
-77;Average fixed raters;0.944461;18.005508;269;807;0.0;[0.93 0.95];Normalized data;Young Adult;beta2;C
-78;Average fixed raters;0.921102;12.674559;269;807;0.0;[0.9  0.94];Normalized data;Young Adult;beta3;C
-79;Average fixed raters;0.756553;4.107662;269;807;0.0;[0.71 0.8 ];Normalized data;Young Adult;gamma;C
-80;Average fixed raters;0.727593;3.670981;341;1023;0.0;[0.68 0.77];Normalized data;Young Adult;delta;PO
-81;Average fixed raters;0.91226;11.397363;341;1023;0.0;[0.9  0.93];Normalized data;Young Adult;theta;PO
-82;Average fixed raters;0.886649;8.822181;341;1023;0.0;[0.87 0.91];Normalized data;Young Adult;alpha-1;PO
-83;Average fixed raters;0.868602;7.610454;341;1023;0.0;[0.84 0.89];Normalized data;Young Adult;alpha-2;PO
-84;Average fixed raters;0.901498;10.152116;341;1023;0.0;[0.88 0.92];Normalized data;Young Adult;beta1;PO
-85;Average fixed raters;0.937634;16.034304;341;1023;0.0;[0.93 0.95];Normalized data;Young Adult;beta2;PO
-86;Average fixed raters;0.895587;9.57739;341;1023;0.0;[0.88 0.91];Normalized data;Young Adult;beta3;PO
-87;Average fixed raters;0.862491;7.272243;341;1023;0.0;[0.84 0.88];Normalized data;Young Adult;gamma;PO
-88;Average fixed raters;0.683851;3.163061;179;537;0.0;[0.6  0.75];Normalized data;Young Adult;delta;T
-89;Average fixed raters;0.926718;13.645857;179;537;0.0;[0.91 0.94];Normalized data;Young Adult;theta;T
-90;Average fixed raters;0.898228;9.825917;179;537;0.0;[0.87 0.92];Normalized data;Young Adult;alpha-1;T
-91;Average fixed raters;0.876876;8.121891;179;537;0.0;[0.84 0.9 ];Normalized data;Young Adult;alpha-2;T
-92;Average fixed raters;0.866273;7.477926;179;537;0.0;[0.83 0.9 ];Normalized data;Young Adult;beta1;T
-93;Average fixed raters;0.921124;12.678078;179;537;0.0;[0.9  0.94];Normalized data;Young Adult;beta2;T
-94;Average fixed raters;0.869173;7.643665;179;537;0.0;[0.83 0.9 ];Normalized data;Young Adult;beta3;T
-95;Average fixed raters;0.688291;3.208119;179;537;0.0;[0.61 0.76];Normalized data;Young Adult;gamma;T
-96;Average fixed raters;0.918387;12.252968;251;753;0.0;[0.9  0.93];Normalized data;Middle Age;delta;F
-97;Average fixed raters;0.970168;33.521273;251;753;0.0;[0.96 0.98];Normalized data;Middle Age;theta;F
-98;Average fixed raters;0.948134;19.28053;251;753;0.0;[0.94 0.96];Normalized data;Middle Age;alpha-1;F
-99;Average fixed raters;0.942489;17.388107;251;753;0.0;[0.93 0.95];Normalized data;Middle Age;alpha-2;F
-100;Average fixed raters;0.976174;41.971674;251;753;0.0;[0.97 0.98];Normalized data;Middle Age;beta1;F
-101;Average fixed raters;0.954315;21.889069;251;753;0.0;[0.94 0.96];Normalized data;Middle Age;beta2;F
-102;Average fixed raters;0.973849;38.239336;251;753;0.0;[0.97 0.98];Normalized data;Middle Age;beta3;F
-103;Average fixed raters;0.93523;15.439296;251;753;0.0;[0.92 0.95];Normalized data;Middle Age;gamma;F
-104;Average fixed raters;0.923823;13.127369;269;807;0.0;[0.91 0.94];Normalized data;Middle Age;delta;C
-105;Average fixed raters;0.968941;32.196829;269;807;0.0;[0.96 0.97];Normalized data;Middle Age;theta;C
-106;Average fixed raters;0.945696;18.414854;269;807;0.0;[0.93 0.96];Normalized data;Middle Age;alpha-1;C
-107;Average fixed raters;0.93216;14.740568;269;807;0.0;[0.92 0.94];Normalized data;Middle Age;alpha-2;C
-108;Average fixed raters;0.973647;37.945996;269;807;0.0;[0.97 0.98];Normalized data;Middle Age;beta1;C
-109;Average fixed raters;0.96184;26.20571;269;807;0.0;[0.95 0.97];Normalized data;Middle Age;beta2;C
-110;Average fixed raters;0.974975;39.960522;269;807;0.0;[0.97 0.98];Normalized data;Middle Age;beta3;C
-111;Average fixed raters;0.907713;10.835755;269;807;0.0;[0.89 0.92];Normalized data;Middle Age;gamma;C
-112;Average fixed raters;0.91383;11.605024;341;1023;0.0;[0.9  0.93];Normalized data;Middle Age;delta;PO
-113;Average fixed raters;0.963621;27.488392;341;1023;0.0;[0.96 0.97];Normalized data;Middle Age;theta;PO
-114;Average fixed raters;0.937722;16.057097;341;1023;0.0;[0.93 0.95];Normalized data;Middle Age;alpha-1;PO
-115;Average fixed raters;0.939859;16.627618;341;1023;0.0;[0.93 0.95];Normalized data;Middle Age;alpha-2;PO
-116;Average fixed raters;0.978095;45.651938;341;1023;0.0;[0.97 0.98];Normalized data;Middle Age;beta1;PO
-117;Average fixed raters;0.960629;25.399723;341;1023;0.0;[0.95 0.97];Normalized data;Middle Age;beta2;PO
-118;Average fixed raters;0.969638;32.935549;341;1023;0.0;[0.96 0.97];Normalized data;Middle Age;beta3;PO
-119;Average fixed raters;0.925845;13.485177;341;1023;0.0;[0.91 0.94];Normalized data;Middle Age;gamma;PO
-120;Average fixed raters;0.908507;10.92977;179;537;0.0;[0.88 0.93];Normalized data;Middle Age;delta;T
-121;Average fixed raters;0.97109;34.589826;179;537;0.0;[0.96 0.98];Normalized data;Middle Age;theta;T
-122;Average fixed raters;0.944834;18.127154;179;537;0.0;[0.93 0.96];Normalized data;Middle Age;alpha-1;T
-123;Average fixed raters;0.91612;11.921758;179;537;0.0;[0.89 0.93];Normalized data;Middle Age;alpha-2;T
-124;Average fixed raters;0.954205;21.836461;179;537;0.0;[0.94 0.96];Normalized data;Middle Age;beta1;T
-125;Average fixed raters;0.918303;12.240409;179;537;0.0;[0.9  0.94];Normalized data;Middle Age;beta2;T
-126;Average fixed raters;0.954877;22.161721;179;537;0.0;[0.94 0.96];Normalized data;Middle Age;beta3;T
-127;Average fixed raters;0.919169;12.371559;179;537;0.0;[0.9  0.94];Normalized data;Middle Age;gamma;T
+0;Average fixed raters;0.864924;7.403214;601;1803;0.0;[0.85 0.88];Preprocessed data;Healthy;delta;F
+1;Average fixed raters;0.957619;23.595292;601;1803;0.0;[0.95 0.96];Preprocessed data;Healthy;theta;F
+2;Average fixed raters;0.926161;13.543008;601;1803;0.0;[0.92 0.94];Preprocessed data;Healthy;alpha-1;F
+3;Average fixed raters;0.907231;10.779427;601;1803;0.0;[0.89 0.92];Preprocessed data;Healthy;alpha-2;F
+4;Average fixed raters;0.940163;16.711999;601;1803;0.0;[0.93 0.95];Preprocessed data;Healthy;beta1;F
+5;Average fixed raters;0.937032;15.881063;601;1803;0.0;[0.93 0.94];Preprocessed data;Healthy;beta2;F
+6;Average fixed raters;0.951419;20.584162;601;1803;0.0;[0.94 0.96];Preprocessed data;Healthy;beta3;F
+7;Average fixed raters;0.920932;12.64728;601;1803;0.0;[0.91 0.93];Preprocessed data;Healthy;gamma;F
+8;Average fixed raters;0.882406;8.503861;644;1932;0.0;[0.87 0.9 ];Preprocessed data;Healthy;delta;C
+9;Average fixed raters;0.961325;25.856775;644;1932;0.0;[0.96 0.97];Preprocessed data;Healthy;theta;C
+10;Average fixed raters;0.923892;13.139239;644;1932;0.0;[0.91 0.93];Preprocessed data;Healthy;alpha-1;C
+11;Average fixed raters;0.925374;13.400242;644;1932;0.0;[0.92 0.93];Preprocessed data;Healthy;alpha-2;C
+12;Average fixed raters;0.941294;17.034057;644;1932;0.0;[0.93 0.95];Preprocessed data;Healthy;beta1;C
+13;Average fixed raters;0.95189;20.785714;644;1932;0.0;[0.95 0.96];Preprocessed data;Healthy;beta2;C
+14;Average fixed raters;0.953298;21.412485;644;1932;0.0;[0.95 0.96];Preprocessed data;Healthy;beta3;C
+15;Average fixed raters;0.897387;9.745365;644;1932;0.0;[0.88 0.91];Preprocessed data;Healthy;gamma;C
+16;Average fixed raters;0.837333;6.147521;816;2448;0.0;[0.82 0.85];Preprocessed data;Healthy;delta;PO
+17;Average fixed raters;0.954183;21.826154;816;2448;0.0;[0.95 0.96];Preprocessed data;Healthy;theta;PO
+18;Average fixed raters;0.918764;12.309796;816;2448;0.0;[0.91 0.93];Preprocessed data;Healthy;alpha-1;PO
+19;Average fixed raters;0.919703;12.453774;816;2448;0.0;[0.91 0.93];Preprocessed data;Healthy;alpha-2;PO
+20;Average fixed raters;0.947579;19.076422;816;2448;0.0;[0.94 0.95];Preprocessed data;Healthy;beta1;PO
+21;Average fixed raters;0.948549;19.435969;816;2448;0.0;[0.94 0.95];Preprocessed data;Healthy;beta2;PO
+22;Average fixed raters;0.956376;22.923424;816;2448;0.0;[0.95 0.96];Preprocessed data;Healthy;beta3;PO
+23;Average fixed raters;0.925254;13.378594;816;2448;0.0;[0.92 0.93];Preprocessed data;Healthy;gamma;PO
+24;Average fixed raters;0.844542;6.432585;429;1287;0.0;[0.82 0.87];Preprocessed data;Healthy;delta;T
+25;Average fixed raters;0.961599;26.040872;429;1287;0.0;[0.96 0.97];Preprocessed data;Healthy;theta;T
+26;Average fixed raters;0.925386;13.402263;429;1287;0.0;[0.91 0.94];Preprocessed data;Healthy;alpha-1;T
+27;Average fixed raters;0.924732;13.285781;429;1287;0.0;[0.91 0.94];Preprocessed data;Healthy;alpha-2;T
+28;Average fixed raters;0.91364;11.579434;429;1287;0.0;[0.9  0.93];Preprocessed data;Healthy;beta1;T
+29;Average fixed raters;0.915854;11.884175;429;1287;0.0;[0.9  0.93];Preprocessed data;Healthy;beta2;T
+30;Average fixed raters;0.933172;14.963763;429;1287;0.0;[0.92 0.94];Preprocessed data;Healthy;beta3;T
+31;Average fixed raters;0.893078;9.352603;429;1287;0.0;[0.88 0.91];Preprocessed data;Healthy;gamma;T
+32;Average fixed raters;0.864924;7.403214;601;1803;0.0;[0.85 0.88];Normalized data;Healthy;delta;F
+33;Average fixed raters;0.957619;23.595292;601;1803;0.0;[0.95 0.96];Normalized data;Healthy;theta;F
+34;Average fixed raters;0.926161;13.543008;601;1803;0.0;[0.92 0.94];Normalized data;Healthy;alpha-1;F
+35;Average fixed raters;0.907231;10.779427;601;1803;0.0;[0.89 0.92];Normalized data;Healthy;alpha-2;F
+36;Average fixed raters;0.940163;16.711999;601;1803;0.0;[0.93 0.95];Normalized data;Healthy;beta1;F
+37;Average fixed raters;0.937032;15.881063;601;1803;0.0;[0.93 0.94];Normalized data;Healthy;beta2;F
+38;Average fixed raters;0.951419;20.584162;601;1803;0.0;[0.94 0.96];Normalized data;Healthy;beta3;F
+39;Average fixed raters;0.920932;12.64728;601;1803;0.0;[0.91 0.93];Normalized data;Healthy;gamma;F
+40;Average fixed raters;0.882406;8.503861;644;1932;0.0;[0.87 0.9 ];Normalized data;Healthy;delta;C
+41;Average fixed raters;0.961325;25.856775;644;1932;0.0;[0.96 0.97];Normalized data;Healthy;theta;C
+42;Average fixed raters;0.923892;13.139239;644;1932;0.0;[0.91 0.93];Normalized data;Healthy;alpha-1;C
+43;Average fixed raters;0.925374;13.400242;644;1932;0.0;[0.92 0.93];Normalized data;Healthy;alpha-2;C
+44;Average fixed raters;0.941294;17.034057;644;1932;0.0;[0.93 0.95];Normalized data;Healthy;beta1;C
+45;Average fixed raters;0.95189;20.785714;644;1932;0.0;[0.95 0.96];Normalized data;Healthy;beta2;C
+46;Average fixed raters;0.953298;21.412485;644;1932;0.0;[0.95 0.96];Normalized data;Healthy;beta3;C
+47;Average fixed raters;0.897387;9.745365;644;1932;0.0;[0.88 0.91];Normalized data;Healthy;gamma;C
+48;Average fixed raters;0.837333;6.147521;816;2448;0.0;[0.82 0.85];Normalized data;Healthy;delta;PO
+49;Average fixed raters;0.954183;21.826154;816;2448;0.0;[0.95 0.96];Normalized data;Healthy;theta;PO
+50;Average fixed raters;0.918764;12.309796;816;2448;0.0;[0.91 0.93];Normalized data;Healthy;alpha-1;PO
+51;Average fixed raters;0.919703;12.453774;816;2448;0.0;[0.91 0.93];Normalized data;Healthy;alpha-2;PO
+52;Average fixed raters;0.947579;19.076422;816;2448;0.0;[0.94 0.95];Normalized data;Healthy;beta1;PO
+53;Average fixed raters;0.948549;19.435969;816;2448;0.0;[0.94 0.95];Normalized data;Healthy;beta2;PO
+54;Average fixed raters;0.956376;22.923424;816;2448;0.0;[0.95 0.96];Normalized data;Healthy;beta3;PO
+55;Average fixed raters;0.925254;13.378594;816;2448;0.0;[0.92 0.93];Normalized data;Healthy;gamma;PO
+56;Average fixed raters;0.844542;6.432585;429;1287;0.0;[0.82 0.87];Normalized data;Healthy;delta;T
+57;Average fixed raters;0.961599;26.040872;429;1287;0.0;[0.96 0.97];Normalized data;Healthy;theta;T
+58;Average fixed raters;0.925386;13.402263;429;1287;0.0;[0.91 0.94];Normalized data;Healthy;alpha-1;T
+59;Average fixed raters;0.924732;13.285781;429;1287;0.0;[0.91 0.94];Normalized data;Healthy;alpha-2;T
+60;Average fixed raters;0.91364;11.579434;429;1287;0.0;[0.9  0.93];Normalized data;Healthy;beta1;T
+61;Average fixed raters;0.915854;11.884175;429;1287;0.0;[0.9  0.93];Normalized data;Healthy;beta2;T
+62;Average fixed raters;0.933172;14.963763;429;1287;0.0;[0.92 0.94];Normalized data;Healthy;beta3;T
+63;Average fixed raters;0.893078;9.352603;429;1287;0.0;[0.88 0.91];Normalized data;Healthy;gamma;T

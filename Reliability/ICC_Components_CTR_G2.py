@@ -80,30 +80,30 @@ datos,groups_labels = merge_biodatos(datosNoBio,N_BIO)
 
 
 N_BIO_HEALTHY = N_BIO[N_BIO.Subject.isin(datos.Subject)]
-def age_counts(x,y,df):
-    return {x:(df['age']<=x).sum(),x+y:(df['age']>=x+y).sum()}
+# def age_counts(x,y,df):
+#     return {x:(df['age']<=x).sum(),x+y:(df['age']>=x+y).sum()}
 
-# for i in range(N_BIO_HEALTHY.age.min(),N_BIO_HEALTHY.age.max()):
-#     print(age_counts(i,1,N_BIO_HEALTHY))
-ds=[]
-for j in range(1,N_BIO_HEALTHY.age.max()-N_BIO_HEALTHY.age.min()):
-    for i in range(N_BIO_HEALTHY.age.min(),N_BIO_HEALTHY.age.max()):
-        da=age_counts(i,j,N_BIO_HEALTHY)
-        dk = list(da.keys())
-        age_sep=abs(dk[0]-dk[1])
-        d = list(da.values())
-        ddif = d[0]-d[1]
-        dsum = d[0]+d[1]
-        if dsum > 10 and abs(ddif) < 5:
-            if d[0] >10 and d[1]>10:
-                if dsum/43 >=0.7:
-                    print(i,j,43-dsum,'{:.2f}'.format((dsum)/43))
-                    print(da)
-                    ddd ={'Edad Joven':f'menor a {dk[0]}','Edad Viejo':f'mayor a {dk[1]}','Num.Sujs Joven':d[0],'Num. Sujs Viejo':d[1],'Separacion edad entre grupos':age_sep,'Num. Total Sujs':dsum,'Porcentaje de Sujs Eliminados':100*(1-dsum/43)}
-                    ds.append(ddd)
+# # for i in range(N_BIO_HEALTHY.age.min(),N_BIO_HEALTHY.age.max()):
+# #     print(age_counts(i,1,N_BIO_HEALTHY))
+# ds=[]
+# for j in range(1,N_BIO_HEALTHY.age.max()-N_BIO_HEALTHY.age.min()):
+#     for i in range(N_BIO_HEALTHY.age.min(),N_BIO_HEALTHY.age.max()):
+#         da=age_counts(i,j,N_BIO_HEALTHY)
+#         dk = list(da.keys())
+#         age_sep=abs(dk[0]-dk[1])
+#         d = list(da.values())
+#         ddif = d[0]-d[1]
+#         dsum = d[0]+d[1]
+#         if dsum > 10 and abs(ddif) < 5:
+#             if d[0] >10 and d[1]>10:
+#                 if dsum/43 >=0.7:
+#                     print(i,j,43-dsum,'{:.2f}'.format((dsum)/43))
+#                     print(da)
+#                     ddd ={'Edad Joven':f'menor a {dk[0]}','Edad Viejo':f'mayor a {dk[1]}','Num.Sujs Joven':d[0],'Num. Sujs Viejo':d[1],'Separacion edad entre grupos':age_sep,'Num. Total Sujs':dsum,'Porcentaje de Sujs Eliminados':100*(1-dsum/43)}
+#                     ds.append(ddd)
 
-dfRange=pd.DataFrame.from_dict(ds)
-dfRange.to_csv('RangoEdad.csv',sep=';')
+# dfRange=pd.DataFrame.from_dict(ds)
+# dfRange.to_csv('RangoEdad.csv',sep=';')
 
 
 #Datos estadisticos de la edad, escolaridad y sexo
