@@ -82,19 +82,19 @@ def barplot_icc_bandsx(icc_data,x_value, title,plot=False,save=False):
   
     
 
-barplot_icc_comp_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for Rois in frequency bands',plot=True,save=True)
-barplot_icc_comp_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for IC in frequency bands', plot=True,save=True)
+barplot_icc_comp_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC(3,k) for Rois in frequency bands',plot=True,save=True)
+barplot_icc_comp_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC(3,k) for IC in frequency bands', plot=True,save=True)
 
-barplot_icc_bandsx(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for ROIs in frequency bands',plot=True,save=True)
-barplot_icc_bandsx(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for IC in frequency bands',plot=True,save=True)
+barplot_icc_bandsx(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC(3,k) for ROIs in frequency bands',plot=True,save=True)
+barplot_icc_bandsx(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC(3,k) for IC in frequency bands',plot=True,save=True)
 
-plot_ICC_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC3k for ROIs','bar',plot=True,save=True)
-plot_ICC_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC3k for ICs','bar',plot=True,save=True)
+plot_ICC_nG(icc_data_Roi[icc_data_Roi['Stage']=='Normalized data'],'Roi','ICC(3,k) for ROIs','bar',plot=True,save=True)
+plot_ICC_nG(icc_data_Comp[icc_data_Comp['Stage']=='Normalized data'],'Components','ICC(3,k) for ICs','bar',plot=True,save=True)
 
-barplot_icc_nB_1G(icc_data_Roi,'Roi','G2',plot=True,save=True)
-barplot_icc_nB_1G(icc_data_Roi,'Roi','CTR',plot=True,save=True)
-barplot_icc_nB_1G(icc_data_Comp,'Components','G2',plot=True,save=True)
-barplot_icc_nB_1G(icc_data_Comp,'Components','CTR',plot=True,save=True)
+groups = icc_data_Comp.Group.unique()
+for gr in groups:
+    barplot_icc_nB_1G(icc_data_Roi,'Roi',gr,plot=True,save=True)
+    barplot_icc_nB_1G(icc_data_Comp,'Components',gr,plot=True,save=True)
 
 def icc_mean(data):
     Stage=data['Stage'].unique()

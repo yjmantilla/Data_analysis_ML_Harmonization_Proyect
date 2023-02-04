@@ -29,8 +29,8 @@ def normality_N_groups_Shapiro(data,dv,group,method='shapiro'):
     pg.normality(data=data, dv=dv, group=group,method=method)
 
 
-icc_data_Roi=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Reliability\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
-icc_data_Comp=pd.read_csv(r'C:\Users\valec\Documents\JI\Codigos\Data_analysis_ML_Harmonization_Proyect\Reliability\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
+icc_data_Roi=pd.read_csv( r'Reliability\ICC_values_csv\icc_values_ROIS_G2-CTR.csv',sep=';')
+icc_data_Comp=pd.read_csv(r'Reliability\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
 
 
 icc_data_Roi=icc_data_Roi[icc_data_Roi['Stage']=='Normalized data']

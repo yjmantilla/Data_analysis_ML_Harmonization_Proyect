@@ -1,0 +1,8 @@
+pandas
+numpy
+scipy
+pingouin
+seaborn
+dataframe_image
+pyarrow
+openpyxl

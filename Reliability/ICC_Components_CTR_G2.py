@@ -13,22 +13,37 @@ import dataframe_image as dfi
 import warnings
 from scipy.stats import mannwhitneyu
 warnings.filterwarnings("ignore")
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
+from Reliability.icc_utils import get_biodf,merge_biodatos
+mode = 'components'
+column = 'Components'
+if mode == 'components':
+    selection = ['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25' ] #Neuronal components
+else:
+    selection = None #['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25' ] #Neuronal components
 
-datos1=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_components.feather") 
-datos2=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_norm_components.feather")
+
+datos1=pd.read_feather(rf"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_{mode}.feather") 
+datos2=pd.read_feather(rf"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_norm_{mode}.feather")
 datos=pd.concat((datos1, datos2))#Original Data
 
-N_BIO=pd.read_excel('Manipulacion- Rois-Componentes de todas las DB\Datosparaorganizardataframes\Demograficosbiomarcadores.xlsx')
-N_BIO = N_BIO.rename(columns={'Codigo':'Subject','Edad en la visita':'age','Sexo':'sex','Escolaridad':'education','Visita':'Session'})
-N_BIO=N_BIO.drop(['MMSE', 'F', 'A', 'S'], axis=1)
-N_BIO['Subject']=N_BIO['Subject'].replace({'_':''}, regex=True)#Quito el _ y lo reemplazo con '' 
+demofile = r"Y:\all\Demograficosbiomarcadores.xlsx"
+N_BIO=get_biodf(demofile)
+N_BIO_HEALTHY = N_BIO.copy()
+
+def foohealth(x):
+    return 'G2' in x or 'CTR' in x
+N_BIO_HEALTHY['HEALTHY'] = N_BIO_HEALTHY['Subject'].apply(foohealth)
+N_BIO_HEALTHY = N_BIO_HEALTHY[N_BIO_HEALTHY['HEALTHY']]
 
 
-def pair_data(datos,components):
+def pair_data(datos,components,column):
     #datos=datos.drop(datos[datos['Session']=='V4P'].index)#Borrar datos
     datos['Session']=datos['Session'].replace({'VO':'V0','V4P':'V4'})
     groups=['CTR','G2'] # Pair groups 
-    datos=datos[datos.Components.isin(components) ] # Only data of components select
+    datos=datos[datos[column].isin(components) ] # Only data of components select
     datos=datos[datos.Group.isin(groups) ] #Only data of CTR y G2
     visitas=['V0','V1','V2','V3']
     #Script for drop subjects without four sessions select
@@ -55,13 +70,46 @@ def pair_data(datos,components):
     print('Visitas de los sujetos: ',datos['Session'].unique())
     return datos
 
-components=['C14', 'C15','C18', 'C20', 'C22','C23', 'C24', 'C25' ] #Neuronal components
-datos=pair_data(datos,components) #Datos filtrados
-N_BIO=N_BIO[N_BIO.Session.isin(['V0'])]
-N_BIO=N_BIO.drop(['Session'], axis=1)
-datos=pd.merge(datos,N_BIO)
+if selection is None:
+    selection = list(set(datos[column]))
+    selection.sort()
+datos=pair_data(datos,selection,column) #Datos filtrados
+datosNoBio=datos.copy()
+
+datos,groups_labels = merge_biodatos(datosNoBio,N_BIO)
+
+
+N_BIO_HEALTHY = N_BIO[N_BIO.Subject.isin(datos.Subject)]
+def age_counts(x,y,df):
+    return {x:(df['age']<=x).sum(),x+y:(df['age']>=x+y).sum()}
+
+# for i in range(N_BIO_HEALTHY.age.min(),N_BIO_HEALTHY.age.max()):
+#     print(age_counts(i,1,N_BIO_HEALTHY))
+ds=[]
+for j in range(1,N_BIO_HEALTHY.age.max()-N_BIO_HEALTHY.age.min()):
+    for i in range(N_BIO_HEALTHY.age.min(),N_BIO_HEALTHY.age.max()):
+        da=age_counts(i,j,N_BIO_HEALTHY)
+        dk = list(da.keys())
+        age_sep=abs(dk[0]-dk[1])
+        d = list(da.values())
+        ddif = d[0]-d[1]
+        dsum = d[0]+d[1]
+        if dsum > 10 and abs(ddif) < 5:
+            if d[0] >10 and d[1]>10:
+                if dsum/43 >=0.7:
+                    print(i,j,43-dsum,'{:.2f}'.format((dsum)/43))
+                    print(da)
+                    ddd ={'Edad Joven':f'menor a {dk[0]}','Edad Viejo':f'mayor a {dk[1]}','Num.Sujs Joven':d[0],'Num. Sujs Viejo':d[1],'Separacion edad entre grupos':age_sep,'Num. Total Sujs':dsum,'Porcentaje de Sujs Eliminados':100*(1-dsum/43)}
+                    ds.append(ddd)
+
+dfRange=pd.DataFrame.from_dict(ds)
+dfRange.to_csv('RangoEdad.csv',sep=';')
+
+
 #Datos estadisticos de la edad, escolaridad y sexo
-d_p=datos[datos.Session.isin(['V0'])&datos.Bands.isin(['delta'])&datos.Components.isin(['C14'])&datos.Stage.isin(['Normalized data'])]
+sel_stat = [selection[0]] #['C14']
+
+d_p=datos[datos.Session.isin(['V0'])&datos.Bands.isin(['delta'])&datos.Components.isin(sel_stat)&datos.Stage.isin(['Normalized data'])]
 datos_estadisticos=d_p.groupby(['Group']).describe(include='all')
 table=datos_estadisticos.loc[:,[('age','count'),('age','mean'),('age','std'),('education','count'),('education','mean'),('education','std'),('sex','count'),('sex','top'),('sex','freq')]]
 dfi.export(table, 'Reliability\Tabla_edad_escolaridad_sexo_separadoreliability.png')
@@ -71,36 +119,37 @@ print(pg.normality(data=d_p, dv='age', group='Group',method='shapiro'))
 print('\nNormalidad en educacion')
 print(pg.normality(data=d_p, dv='education', group='Group',method='shapiro'))
 print('\nDiferencias en edad entre grupos U-test')
-print(mannwhitneyu(d_p[d_p.Group.isin(['CTR'])]['age'], d_p[d_p.Group.isin(['G2'])]['age']))
+print(mannwhitneyu(d_p[d_p.Group.isin([groups_labels[0]])]['age'], d_p[d_p.Group.isin([groups_labels[1]])]['age']))
 print('\nDiferencias en escolaridad entre grupos U-test')
-print(mannwhitneyu(d_p[d_p.Group.isin(['CTR'])]['education'], d_p[d_p.Group.isin(['G2'])]['education']))
+print(mannwhitneyu(d_p[d_p.Group.isin([groups_labels[0]])]['education'], d_p[d_p.Group.isin([groups_labels[1]])]['education']))
 ## Diferencias estadisticas entre CTR y G2 en cuanto la edad y escolaridad
 
 #Tabla edad escolaridad y genero y valores p asociados a las pruebas 
 
 # ANOVA mix
 print('Anova mix')
-aov = pg.mixed_anova(data = datos, dv = 'Powers', between = 'Group', within = 'Session',subject = 'Subject')
+aov = pg.mixed_anova(data = datos[datos.Stage.isin(['Normalized data'])], dv = 'Powers', between = 'Group', within = 'Session',subject = 'Subject')
 pg.print_table(aov)
 
 #U test
 print('Test U')
-ap=pg.mwu(datos[datos['Group']=='CTR']['Powers'],datos[datos['Group']=='G2']['Powers'])
+ap=pg.mwu(datos[datos['Group']==groups_labels[0]]['Powers'],datos[datos['Group']==groups_labels[0]]['Powers'])
 pg.print_table(ap)
 
 
 bandas=datos['Bands'].unique()
 Stage=datos['Stage'].unique()
 icc_value = pd.DataFrame(columns=['ICC','F','df1','df2','pval','CI95%'])
-G=['CTR','G2']
+G=groups_labels
+
 for st in Stage:
     d_stage=datos[datos['Stage']==st] 
     for g in G:
         d_group=d_stage[d_stage['Group']==g]
         dic={}
         icc_comp=[]
-        for comp in components:
-            d_comp=d_group[d_group['Components']==comp]
+        for comp in selection:
+            d_comp=d_group[d_group[column]==comp]
             visits=list(d_comp['Session'].unique())
             matrix_c=pd.DataFrame(columns=['index','Session', 'Power','Bands','Group','Stage','Subject']) #Se le asigna a un dataframe los datos d elas columnas
             subjects=d_comp['Subject'].unique() 
@@ -137,5 +186,5 @@ for st in Stage:
         icc_value.append(icc_value)
     icc_value.append(icc_value)
 #print(icc_value)
-icc_value.to_csv(r'Reliability\ICC_values_csv\icc_values_Components_G2-CTR.csv',sep=';')
+icc_value.to_csv(rf'Reliability/ICC_values_csv/icc_values_{mode}_G2-CTR.csv',sep=';')
 #matrix_c.to_csv(r'sovaharmony\Reproducibilidad\icc_values_G2-CTR_test.csv',sep=';') 

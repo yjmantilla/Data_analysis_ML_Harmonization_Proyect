@@ -9,10 +9,18 @@ import scipy.io
 import pingouin as pg
 import warnings
 warnings.filterwarnings("ignore")
+import os
+import sys
+sys.path.insert(0, os.path.abspath('..'))
+
+from Reliability.icc_utils import get_biodf,merge_biodatos
 
 datos1=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_channels.feather") 
 datos2=pd.read_feather(r"Reliability\Data_csv_Powers_Componentes-Channels\longitudinal_data_powers_long_CE_norm_channels.feather")
 datos=pd.concat((datos1,datos2))
+
+demofile = r"Y:\all\Demograficosbiomarcadores.xlsx"
+N_BIO=get_biodf(demofile)
 
 def add_ROIS_filter_data(data,groups,rois,rois_labels):
     '''Function created to add a column with the ROI corresponding to the channel,
@@ -58,15 +66,18 @@ C = ['FC3', 'FC1', 'FCZ', 'FC2', 'FC4', 'C3', 'C1', 'CZ', 'C2', 'C4', 'CP3', 'CP
 PO = ['P7', 'P5', 'P3', 'P1', 'PZ', 'P2', 'P4', 'P6', 'P8', 'PO7', 'PO5', 'PO3', 'POZ', 'PO4', 'PO6', 'PO8', 'CB1', 'O1', 'OZ', 'O2', 'CB2']
 rois = [F,C,PO,T]
 roi_labels = ['F','C','PO','T']
-groups=['CTR','G2'] 
+old_groups=['CTR','G2'] 
 
-datos=add_ROIS_filter_data(datos,groups,rois,roi_labels)
+datos=add_ROIS_filter_data(datos,old_groups,rois,roi_labels)
+
+datosNoBio=datos.copy()
+datos,groups = merge_biodatos(datosNoBio,N_BIO)
 
 bandas=datos['Bands'].unique()
 Stage=datos['Stage'].unique()
 
 icc_value = pd.DataFrame(columns=['Description','ICC','F','df1','df2','pval','CI95%'])
-G=['CTR','G2']
+G=groups
 for st in Stage:
     d_stage=datos[datos['Stage']==st] 
     for g in G:

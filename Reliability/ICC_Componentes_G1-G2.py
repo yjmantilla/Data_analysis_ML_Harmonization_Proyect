@@ -104,4 +104,4 @@ for st in Stage:
 
         icc_value.append(icc_value)
     icc_value.append(icc_value)
-#icc_value.to_csv(r'sovaharmony\Reproducibilidad\ICC_values_csv\icc_values_Components_G1-G2.csv',sep=';')
+icc_value.to_csv(r'Reliability/ICC_values_csv/icc_values_Components_G1-G2.csv',sep=';')
